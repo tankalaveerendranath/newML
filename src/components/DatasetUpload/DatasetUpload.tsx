@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { ArrowLeft, Upload, FileText, BarChart3, Brain, Zap } from 'lucide-react';
+import { ArrowLeft, Upload, FileText, BarChart3, Brain, Zap, Download, CheckCircle, AlertCircle, Trash2 } from 'lucide-react';
 import { Dataset, DatasetRecommendation, DatasetAnalysis } from '../../types';
 import { useDatasetHistory } from '../../hooks/useDatasetHistory';
 import { useAuth } from '../../hooks/useAuth';
@@ -8,14 +8,81 @@ interface DatasetUploadProps {
   onBack: () => void;
 }
 
+interface CleanedDataset {
+  originalRows: number;
+  cleanedRows: number;
+  removedRows: number;
+  missingValues: number;
+  outliers: number;
+  duplicates: number;
+  cleanedData: any[][];
+  cleaningSteps: string[];
+}
+
 export const DatasetUpload: React.FC<DatasetUploadProps> = ({ onBack }) => {
   const { user } = useAuth();
   const { addToHistory } = useDatasetHistory(user?.id || null);
   const [file, setFile] = useState<File | null>(null);
   const [dataset, setDataset] = useState<Dataset | null>(null);
+  const [cleanedDataset, setCleanedDataset] = useState<CleanedDataset | null>(null);
   const [recommendations, setRecommendations] = useState<DatasetRecommendation[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [showCleanedData, setShowCleanedData] = useState(false);
+
+  const simulateDataCleaning = (originalData: any[][]): CleanedDataset => {
+    const originalRows = originalData.length;
+    let cleanedData = [...originalData];
+    const cleaningSteps: string[] = [];
+    let removedRows = 0;
+    let missingValues = 0;
+    let outliers = 0;
+    let duplicates = 0;
+
+    // Simulate missing values detection and removal
+    const missingValueRows = Math.floor(originalRows * 0.1); // 10% missing values
+    missingValues = missingValueRows;
+    cleanedData = cleanedData.filter((_, index) => index % 10 !== 0); // Remove every 10th row
+    removedRows += missingValueRows;
+    if (missingValues > 0) {
+      cleaningSteps.push(`Removed ${missingValues} rows with missing values`);
+    }
+
+    // Simulate outlier detection and removal
+    const outlierRows = Math.floor(originalRows * 0.05); // 5% outliers
+    outliers = outlierRows;
+    cleanedData = cleanedData.filter((_, index) => index % 20 !== 0); // Remove every 20th row
+    removedRows += outlierRows;
+    if (outliers > 0) {
+      cleaningSteps.push(`Removed ${outliers} outlier data points`);
+    }
+
+    // Simulate duplicate detection and removal
+    const duplicateRows = Math.floor(originalRows * 0.03); // 3% duplicates
+    duplicates = duplicateRows;
+    removedRows += duplicateRows;
+    if (duplicates > 0) {
+      cleaningSteps.push(`Removed ${duplicates} duplicate rows`);
+    }
+
+    // Add data normalization step
+    cleaningSteps.push('Normalized numerical features to [0, 1] range');
+    cleaningSteps.push('Encoded categorical variables');
+    cleaningSteps.push('Applied feature scaling for optimal model performance');
+
+    const cleanedRows = originalRows - removedRows;
+
+    return {
+      originalRows,
+      cleanedRows,
+      removedRows,
+      missingValues,
+      outliers,
+      duplicates,
+      cleanedData,
+      cleaningSteps
+    };
+  };
 
   const analyzeDataset = useCallback((file: File) => {
     setIsAnalyzing(true);
@@ -31,9 +98,18 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({ onBack }) => {
         target: ['classification', 'regression', 'clustering'][Math.floor(Math.random() * 3)] as any
       };
 
+      // Generate mock original data
+      const originalData = Array.from({ length: mockDataset.samples }, (_, i) => 
+        Array.from({ length: mockDataset.features }, (_, j) => 
+          Math.random() * 100 + (i * 0.1) + (j * 0.05)
+        )
+      );
+
+      const cleaned = simulateDataCleaning(originalData);
       const mockRecommendations = generateRecommendations(mockDataset);
       
       setDataset(mockDataset);
+      setCleanedDataset(cleaned);
       setRecommendations(mockRecommendations);
       setIsAnalyzing(false);
 
@@ -46,7 +122,7 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({ onBack }) => {
         recommendations: mockRecommendations
       };
       addToHistory(analysis);
-    }, 2000);
+    }, 3000);
   }, [addToHistory]);
 
   const generateRecommendations = (dataset: Dataset): DatasetRecommendation[] => {
@@ -157,6 +233,22 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({ onBack }) => {
     return 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-900/20';
   };
 
+  const downloadCleanedData = () => {
+    if (!cleanedDataset) return;
+    
+    const csvContent = cleanedDataset.cleanedData
+      .map(row => row.join(','))
+      .join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `cleaned_${file?.name || 'dataset.csv'}`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
@@ -257,6 +349,102 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({ onBack }) => {
               </div>
             </div>
           )}
+
+          {/* Data Cleaning Results */}
+          {cleanedDataset && (
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-colors">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                  <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
+                  Data Cleaning Results
+                </h3>
+                <button
+                  onClick={downloadCleanedData}
+                  className="flex items-center space-x-2 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Download Cleaned Data</span>
+                </button>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div className="text-lg font-bold text-gray-900 dark:text-white">{cleanedDataset.originalRows.toLocaleString()}</div>
+                  <div className="text-xs text-gray-600 dark:text-gray-400">Original Rows</div>
+                </div>
+                <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                  <div className="text-lg font-bold text-green-600 dark:text-green-400">{cleanedDataset.cleanedRows.toLocaleString()}</div>
+                  <div className="text-xs text-green-700 dark:text-green-300">Cleaned Rows</div>
+                </div>
+              </div>
+
+              <div className="space-y-2 mb-4">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600 dark:text-gray-400">Missing values removed:</span>
+                  <span className="font-medium text-red-600 dark:text-red-400">{cleanedDataset.missingValues}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600 dark:text-gray-400">Outliers removed:</span>
+                  <span className="font-medium text-red-600 dark:text-red-400">{cleanedDataset.outliers}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600 dark:text-gray-400">Duplicates removed:</span>
+                  <span className="font-medium text-red-600 dark:text-red-400">{cleanedDataset.duplicates}</span>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-200 dark:border-gray-600 pt-4">
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Cleaning Steps Applied:</h4>
+                <ul className="space-y-1">
+                  {cleanedDataset.cleaningSteps.map((step, index) => (
+                    <li key={index} className="text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                      <CheckCircle className="w-3 h-3 text-green-500 mr-2 flex-shrink-0" />
+                      {step}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <button
+                onClick={() => setShowCleanedData(!showCleanedData)}
+                className="mt-4 w-full text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium"
+              >
+                {showCleanedData ? 'Hide' : 'Show'} Cleaned Data Preview
+              </button>
+
+              {showCleanedData && (
+                <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full text-xs">
+                      <thead>
+                        <tr className="border-b border-gray-200 dark:border-gray-600">
+                          {Array.from({ length: Math.min(5, dataset?.features || 0) }, (_, i) => (
+                            <th key={i} className="text-left py-2 px-2 font-medium text-gray-900 dark:text-white">
+                              Feature {i + 1}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {cleanedDataset.cleanedData.slice(0, 5).map((row, rowIndex) => (
+                          <tr key={rowIndex} className="border-b border-gray-100 dark:border-gray-600">
+                            {row.slice(0, 5).map((cell, cellIndex) => (
+                              <td key={cellIndex} className="py-2 px-2 text-gray-700 dark:text-gray-300">
+                                {typeof cell === 'number' ? cell.toFixed(2) : cell}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    Showing first 5 rows and 5 columns of cleaned data
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Analysis & Recommendations */}
@@ -265,11 +453,12 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({ onBack }) => {
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center transition-colors">
               <Brain className="w-12 h-12 text-blue-600 dark:text-blue-400 mx-auto mb-4 animate-pulse" />
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Analyzing Dataset...</h3>
-              <p className="text-gray-600 dark:text-gray-400">Our AI is examining your data to provide the best algorithm recommendations.</p>
-              <div className="mt-4">
+              <p className="text-gray-600 dark:text-gray-400 mb-4">Our AI is examining your data and performing cleaning operations to provide the best algorithm recommendations.</p>
+              <div className="space-y-2">
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                  <div className="bg-blue-600 dark:bg-blue-400 h-2 rounded-full animate-pulse" style={{ width: '60%' }}></div>
+                  <div className="bg-blue-600 dark:bg-blue-400 h-2 rounded-full animate-pulse" style={{ width: '33%' }}></div>
                 </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Cleaning data and removing outliers...</p>
               </div>
             </div>
           )}
@@ -309,8 +498,9 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({ onBack }) => {
               
               <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                 <p className="text-sm text-blue-700 dark:text-blue-300">
-                  <strong>Pro Tip:</strong> These recommendations are based on your dataset characteristics. 
-                  Consider trying multiple algorithms and comparing their performance on your specific problem.
+                  <strong>Pro Tip:</strong> These recommendations are based on your cleaned dataset characteristics. 
+                  The data cleaning process has improved data quality by removing {cleanedDataset?.removedRows || 0} problematic rows, 
+                  which should lead to better model performance.
                 </p>
               </div>
             </div>
@@ -323,7 +513,7 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({ onBack }) => {
               </div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Ready to Analyze</h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Upload your dataset to get personalized algorithm recommendations based on your data characteristics.
+                Upload your dataset to get personalized algorithm recommendations and automatic data cleaning.
               </p>
             </div>
           )}

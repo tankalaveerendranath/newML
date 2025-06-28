@@ -54,7 +54,72 @@ export const algorithms: Algorithm[] = [
         animation: 'slideInUp',
         code: 'while |cost_change| > tolerance and iter < max_iter'
       }
-    ]
+    ],
+    mathematicalExample: {
+      title: 'House Price Prediction Example',
+      dataset: {
+        description: 'Predicting house prices based on size (square feet)',
+        features: ['Size (sq ft)', 'Price ($)'],
+        data: [
+          [1000, 150000],
+          [1200, 180000],
+          [1500, 225000],
+          [1800, 270000],
+          [2000, 300000]
+        ]
+      },
+      calculations: [
+        {
+          step: 1,
+          title: 'Initialize Parameters',
+          formula: 'θ₀ = 0, θ₁ = 0, α = 0.0001',
+          calculation: 'Starting with zero weights and learning rate 0.0001',
+          result: 'θ₀ = 0, θ₁ = 0',
+          explanation: 'We start with zero parameters and will learn the optimal values through gradient descent.'
+        },
+        {
+          step: 2,
+          title: 'First Prediction',
+          formula: 'ŷ = θ₀ + θ₁ × x',
+          calculation: 'ŷ₁ = 0 + 0 × 1000 = 0',
+          result: '0',
+          explanation: 'With zero parameters, our initial predictions are all zero, which is clearly wrong.'
+        },
+        {
+          step: 3,
+          title: 'Calculate Cost (MSE)',
+          formula: 'J = (1/2m) × Σ(ŷᵢ - yᵢ)²',
+          calculation: 'J = (1/10) × [(0-150000)² + (0-180000)² + ... ] = 5.145 × 10¹⁰',
+          result: '51,450,000,000',
+          explanation: 'The initial cost is very high because our predictions are far from actual values.'
+        },
+        {
+          step: 4,
+          title: 'Compute Gradients',
+          formula: '∂J/∂θ₀ = (1/m) × Σ(ŷᵢ - yᵢ), ∂J/∂θ₁ = (1/m) × Σ((ŷᵢ - yᵢ) × xᵢ)',
+          calculation: '∂J/∂θ₀ = -225000, ∂J/∂θ₁ = -337,500,000',
+          result: '∂J/∂θ₀ = -225000, ∂J/∂θ₁ = -337,500,000',
+          explanation: 'Negative gradients indicate we need to increase both parameters to reduce cost.'
+        },
+        {
+          step: 5,
+          title: 'Update Parameters',
+          formula: 'θ₀ = θ₀ - α × ∂J/∂θ₀, θ₁ = θ₁ - α × ∂J/∂θ₁',
+          calculation: 'θ₀ = 0 - 0.0001 × (-225000) = 22.5, θ₁ = 0 - 0.0001 × (-337,500,000) = 33.75',
+          result: 'θ₀ = 22.5, θ₁ = 33.75',
+          explanation: 'After one iteration, we have learned some relationship between size and price.'
+        },
+        {
+          step: 6,
+          title: 'New Prediction',
+          formula: 'ŷ = θ₀ + θ₁ × x',
+          calculation: 'ŷ₁ = 22.5 + 33.75 × 1000 = 33,772.5',
+          result: '$33,772.5',
+          explanation: 'Our prediction is now much closer to the actual price of $150,000. We continue this process until convergence.'
+        }
+      ],
+      finalResult: 'After many iterations, the algorithm converges to θ₀ ≈ 30,000 and θ₁ ≈ 135, giving us the equation: Price = 30,000 + 135 × Size. This means the base price is $30,000 and each square foot adds $135 to the price.'
+    }
   },
   {
     id: 'decision-tree',
@@ -109,7 +174,75 @@ export const algorithms: Algorithm[] = [
         animation: 'fadeInUp',
         code: 'leaf.prediction = majority_class(leaf_data) or mean(leaf_data)'
       }
-    ]
+    ],
+    mathematicalExample: {
+      title: 'Loan Approval Decision Tree',
+      dataset: {
+        description: 'Predicting loan approval based on applicant characteristics',
+        features: ['Age', 'Income', 'Credit Score', 'Approved'],
+        data: [
+          [25, 35000, 650, 0],
+          [35, 55000, 720, 1],
+          [45, 75000, 780, 1],
+          [28, 40000, 680, 0],
+          [52, 85000, 800, 1],
+          [30, 45000, 700, 1],
+          [38, 60000, 750, 1],
+          [26, 30000, 620, 0]
+        ]
+      },
+      calculations: [
+        {
+          step: 1,
+          title: 'Calculate Initial Entropy',
+          formula: 'Entropy(S) = -Σ(pᵢ × log₂(pᵢ))',
+          calculation: 'p(approved) = 5/8, p(rejected) = 3/8\nEntropy = -(5/8)×log₂(5/8) - (3/8)×log₂(3/8)',
+          result: '0.954',
+          explanation: 'High entropy indicates the dataset is mixed with both approved and rejected loans.'
+        },
+        {
+          step: 2,
+          title: 'Test Split on Age ≤ 30',
+          formula: 'Information Gain = Entropy(S) - Σ(|Sᵥ|/|S| × Entropy(Sᵥ))',
+          calculation: 'Left: Age ≤ 30 → [25,28,30,26] → 1 approved, 3 rejected\nRight: Age > 30 → [35,45,52,38] → 4 approved, 0 rejected',
+          result: 'Gain = 0.609',
+          explanation: 'This split separates the data well, with younger applicants mostly rejected and older ones approved.'
+        },
+        {
+          step: 3,
+          title: 'Test Split on Income ≤ 50000',
+          formula: 'Information Gain = Entropy(S) - Σ(|Sᵥ|/|S| × Entropy(Sᵥ))',
+          calculation: 'Left: Income ≤ 50000 → [35000,40000,45000,30000] → 1 approved, 3 rejected\nRight: Income > 50000 → [55000,75000,85000,60000] → 4 approved, 0 rejected',
+          result: 'Gain = 0.609',
+          explanation: 'Income split gives the same information gain as age, both are good splitting criteria.'
+        },
+        {
+          step: 4,
+          title: 'Choose Best Split (Age ≤ 30)',
+          formula: 'Best Split = argmax(Information Gain)',
+          calculation: 'Age ≤ 30 selected as root split (could also choose Income)',
+          result: 'Root: Age ≤ 30?',
+          explanation: 'We choose age as our first split since it has the highest information gain.'
+        },
+        {
+          step: 5,
+          title: 'Split Left Subtree (Age ≤ 30)',
+          formula: 'Further split on Credit Score ≤ 675',
+          calculation: 'Left: Credit ≤ 675 → [650,680,620] → 0 approved, 3 rejected\nRight: Credit > 675 → [700] → 1 approved, 0 rejected',
+          result: 'Perfect separation achieved',
+          explanation: 'Young applicants with low credit scores are rejected, those with high scores are approved.'
+        },
+        {
+          step: 6,
+          title: 'Final Tree Structure',
+          formula: 'Complete decision tree with leaf predictions',
+          calculation: 'Root: Age ≤ 30?\n├─ Yes: Credit ≤ 675? (Yes→Reject, No→Approve)\n└─ No: Approve',
+          result: 'Tree depth: 2, Accuracy: 100%',
+          explanation: 'The final tree perfectly classifies all training examples using simple rules about age and credit score.'
+        }
+      ],
+      finalResult: 'The decision tree learned that applicants over 30 are always approved, while younger applicants need a credit score above 675 for approval. This tree achieves 100% accuracy on the training data with simple, interpretable rules.'
+    }
   },
   {
     id: 'random-forest',
@@ -164,7 +297,75 @@ export const algorithms: Algorithm[] = [
         animation: 'fadeInUp',
         code: 'return final_prediction, feature_importance, out_of_bag_score'
       }
-    ]
+    ],
+    mathematicalExample: {
+      title: 'Email Spam Classification with Random Forest',
+      dataset: {
+        description: 'Classifying emails as spam or not spam using word frequencies',
+        features: ['Word_Money', 'Word_Free', 'Word_Click', 'Spam'],
+        data: [
+          [5, 3, 2, 1],
+          [0, 1, 0, 0],
+          [8, 6, 4, 1],
+          [1, 0, 1, 0],
+          [12, 8, 7, 1],
+          [2, 1, 0, 0],
+          [6, 4, 3, 1],
+          [0, 0, 1, 0]
+        ]
+      },
+      calculations: [
+        {
+          step: 1,
+          title: 'Create Bootstrap Sample 1',
+          formula: 'Bootstrap sampling with replacement',
+          calculation: 'Sample 1: [5,3,2,1], [8,6,4,1], [5,3,2,1], [12,8,7,1], [6,4,3,1], [0,1,0,0], [2,1,0,0], [0,0,1,0]',
+          result: '5 spam, 3 not spam',
+          explanation: 'First bootstrap sample has more spam examples due to random sampling with replacement.'
+        },
+        {
+          step: 2,
+          title: 'Build Tree 1 with Random Features',
+          formula: 'Random feature selection: √3 ≈ 2 features per split',
+          calculation: 'Selected features: [Word_Money, Word_Free]\nBest split: Word_Money > 3 → Left: not spam, Right: spam',
+          result: 'Tree 1 accuracy: 87.5%',
+          explanation: 'Tree 1 uses only 2 features and achieves good performance on its bootstrap sample.'
+        },
+        {
+          step: 3,
+          title: 'Create Bootstrap Sample 2',
+          formula: 'Different bootstrap sample',
+          calculation: 'Sample 2: [0,1,0,0], [1,0,1,0], [8,6,4,1], [2,1,0,0], [12,8,7,1], [0,0,1,0], [6,4,3,1], [5,3,2,1]',
+          result: '4 spam, 4 not spam',
+          explanation: 'Second bootstrap sample is more balanced between spam and not spam.'
+        },
+        {
+          step: 4,
+          title: 'Build Tree 2 with Different Features',
+          formula: 'Random feature selection: [Word_Free, Word_Click]',
+          calculation: 'Selected features: [Word_Free, Word_Click]\nBest split: Word_Free > 2 → Left: not spam, Right: spam',
+          result: 'Tree 2 accuracy: 75%',
+          explanation: 'Tree 2 uses different features and learns a different decision boundary.'
+        },
+        {
+          step: 5,
+          title: 'Combine Predictions (Voting)',
+          formula: 'Majority voting across all trees',
+          calculation: 'Test email: [4, 2, 1]\nTree 1 prediction: Spam (Word_Money=4 > 3)\nTree 2 prediction: Not Spam (Word_Free=2 ≤ 2)\nTree 3 prediction: Spam',
+          result: 'Final: Spam (2/3 votes)',
+          explanation: 'Random Forest combines individual tree predictions through majority voting.'
+        },
+        {
+          step: 6,
+          title: 'Calculate Feature Importance',
+          formula: 'Average importance across all trees',
+          calculation: 'Word_Money: 0.45, Word_Free: 0.35, Word_Click: 0.20',
+          result: 'Most important: Word_Money',
+          explanation: 'Random Forest provides feature importance by averaging the importance scores from all trees.'
+        }
+      ],
+      finalResult: 'The Random Forest with 100 trees achieves 94% accuracy by combining diverse decision trees. Each tree sees different data and features, making the ensemble more robust than any single tree. The model identifies "Word_Money" as the most important feature for spam detection.'
+    }
   },
   {
     id: 'kmeans',
@@ -219,7 +420,75 @@ export const algorithms: Algorithm[] = [
         animation: 'fadeInUp',
         code: 'return cluster_assignments, final_centroids, inertia'
       }
-    ]
+    ],
+    mathematicalExample: {
+      title: 'Customer Segmentation Example',
+      dataset: {
+        description: 'Segmenting customers based on annual spending and age',
+        features: ['Age', 'Annual Spending ($)'],
+        data: [
+          [25, 15000],
+          [30, 18000],
+          [35, 22000],
+          [45, 45000],
+          [50, 50000],
+          [55, 48000],
+          [65, 25000],
+          [70, 20000]
+        ]
+      },
+      calculations: [
+        {
+          step: 1,
+          title: 'Initialize 3 Centroids Randomly',
+          formula: 'C₁ = (x₁, y₁), C₂ = (x₂, y₂), C₃ = (x₃, y₃)',
+          calculation: 'C₁ = (30, 20000), C₂ = (50, 40000), C₃ = (60, 30000)',
+          result: 'Initial centroids placed',
+          explanation: 'We start with 3 random centroids in the age-spending space.'
+        },
+        {
+          step: 2,
+          title: 'Calculate Distances (Iteration 1)',
+          formula: 'distance = √[(x₁-x₂)² + (y₁-y₂)²]',
+          calculation: 'Point (25, 15000):\nd₁ = √[(25-30)² + (15000-20000)²] = 5000.0\nd₂ = √[(25-50)² + (15000-40000)²] = 25000.6\nd₃ = √[(25-60)² + (15000-30000)²] = 18027.8',
+          result: 'Assign to Cluster 1 (closest)',
+          explanation: 'Each point is assigned to the nearest centroid based on Euclidean distance.'
+        },
+        {
+          step: 3,
+          title: 'Assign All Points to Clusters',
+          formula: 'cluster[i] = argmin(distance(point[i], centroid[j]))',
+          calculation: 'Cluster 1: [(25,15000), (30,18000), (35,22000)]\nCluster 2: [(45,45000), (50,50000), (55,48000)]\nCluster 3: [(65,25000), (70,20000)]',
+          result: '3 clusters formed',
+          explanation: 'Points are grouped based on proximity to centroids, forming natural customer segments.'
+        },
+        {
+          step: 4,
+          title: 'Update Centroids (Iteration 1)',
+          formula: 'new_centroid = (mean(x_values), mean(y_values))',
+          calculation: 'C₁ = ((25+30+35)/3, (15000+18000+22000)/3) = (30, 18333)\nC₂ = ((45+50+55)/3, (45000+50000+48000)/3) = (50, 47667)\nC₃ = ((65+70)/2, (25000+20000)/2) = (67.5, 22500)',
+          result: 'Centroids moved to cluster centers',
+          explanation: 'New centroids are calculated as the mean position of all points in each cluster.'
+        },
+        {
+          step: 5,
+          title: 'Check Convergence',
+          formula: 'convergence = Σ|new_centroid - old_centroid| < tolerance',
+          calculation: 'Centroid movement:\nC₁: √[(30-30)² + (18333-20000)²] = 1667\nC₂: √[(50-50)² + (47667-40000)²] = 7667\nC₃: √[(67.5-60)² + (22500-30000)²] = 7500.4',
+          result: 'Not converged, continue',
+          explanation: 'Centroids moved significantly, so we continue with another iteration.'
+        },
+        {
+          step: 6,
+          title: 'Final Clusters (After Convergence)',
+          formula: 'Final cluster assignments after 3 iterations',
+          calculation: 'Young Spenders: [(25,15000), (30,18000), (35,22000)] - Centroid: (30, 18333)\nHigh Spenders: [(45,45000), (50,50000), (55,48000)] - Centroid: (50, 47667)\nSenior Savers: [(65,25000), (70,20000)] - Centroid: (67.5, 22500)',
+          result: '3 distinct customer segments',
+          explanation: 'K-means identified three customer segments: young low spenders, middle-aged high spenders, and senior moderate spenders.'
+        }
+      ],
+      finalResult: 'K-means successfully segmented customers into 3 groups: Young Spenders (avg age 30, spending $18K), High Spenders (avg age 50, spending $48K), and Senior Savers (avg age 68, spending $23K). This segmentation can help businesses tailor marketing strategies for each group.'
+    }
   },
   {
     id: 'neural-networks',
@@ -274,7 +543,71 @@ export const algorithms: Algorithm[] = [
         animation: 'fadeInUp',
         code: 'W = W - learning_rate * ∇W, b = b - learning_rate * ∇b'
       }
-    ]
+    ],
+    mathematicalExample: {
+      title: 'XOR Problem with Neural Network',
+      dataset: {
+        description: 'Learning the XOR function (exclusive OR) which is not linearly separable',
+        features: ['Input1', 'Input2', 'XOR Output'],
+        data: [
+          [0, 0, 0],
+          [0, 1, 1],
+          [1, 0, 1],
+          [1, 1, 0]
+        ]
+      },
+      calculations: [
+        {
+          step: 1,
+          title: 'Network Architecture',
+          formula: 'Input Layer: 2 neurons, Hidden Layer: 2 neurons, Output Layer: 1 neuron',
+          calculation: 'Network: [2, 2, 1]\nActivation: Sigmoid function σ(x) = 1/(1 + e^(-x))',
+          result: '2-2-1 architecture',
+          explanation: 'We need at least one hidden layer to solve the XOR problem since it\'s not linearly separable.'
+        },
+        {
+          step: 2,
+          title: 'Initialize Weights',
+          formula: 'W₁ = [[w₁₁, w₁₂], [w₂₁, w₂₂]], W₂ = [[w₃₁], [w₃₂]]',
+          calculation: 'W₁ = [[0.5, -0.3], [0.2, 0.8]], b₁ = [0.1, -0.2]\nW₂ = [[0.9], [-0.7]], b₂ = [0.3]',
+          result: 'Random initialization complete',
+          explanation: 'Weights are initialized randomly to break symmetry and allow the network to learn.'
+        },
+        {
+          step: 3,
+          title: 'Forward Pass for Input [1, 0]',
+          formula: 'z = W·a + b, a = σ(z)',
+          calculation: 'Hidden layer:\nz₁ = [0.5×1 + (-0.3)×0] + 0.1 = 0.6, a₁ = σ(0.6) = 0.646\nz₂ = [0.2×1 + 0.8×0] + (-0.2) = 0.0, a₂ = σ(0.0) = 0.5\n\nOutput layer:\nz₃ = [0.9×0.646 + (-0.7)×0.5] + 0.3 = 0.581 + 0.3 = 0.881\noutput = σ(0.881) = 0.707',
+          result: 'Predicted: 0.707, Target: 1',
+          explanation: 'The network\'s initial prediction is 0.707, but the target for XOR(1,0) is 1.'
+        },
+        {
+          step: 4,
+          title: 'Calculate Loss',
+          formula: 'Loss = ½(target - prediction)²',
+          calculation: 'Loss = ½(1 - 0.707)² = ½(0.293)² = 0.043',
+          result: 'Loss = 0.043',
+          explanation: 'Mean squared error measures how far our prediction is from the target.'
+        },
+        {
+          step: 5,
+          title: 'Backpropagation',
+          formula: 'δ = (target - output) × σ\'(z), ∇W = δ × a^(l-1)',
+          calculation: 'Output layer error:\nδ₃ = (1 - 0.707) × 0.707 × (1 - 0.707) = 0.293 × 0.207 = 0.061\n\nHidden layer errors:\nδ₁ = δ₃ × w₃₁ × σ\'(z₁) = 0.061 × 0.9 × 0.229 = 0.013\nδ₂ = δ₃ × w₃₂ × σ\'(z₂) = 0.061 × (-0.7) × 0.25 = -0.011',
+          result: 'Gradients calculated',
+          explanation: 'Backpropagation calculates how much each weight contributed to the error.'
+        },
+        {
+          step: 6,
+          title: 'Update Weights',
+          formula: 'W_new = W_old - α × ∇W',
+          calculation: 'Learning rate α = 0.5\n\nOutput weights:\nw₃₁ = 0.9 - 0.5 × (0.061 × 0.646) = 0.9 - 0.020 = 0.880\nw₃₂ = -0.7 - 0.5 × (0.061 × 0.5) = -0.7 - 0.015 = -0.715\n\nHidden weights updated similarly...',
+          result: 'Weights updated',
+          explanation: 'After many iterations, the network learns to correctly output XOR values for all inputs.'
+        }
+      ],
+      finalResult: 'After 10,000 training iterations, the neural network successfully learns the XOR function with 99.9% accuracy. The hidden layer learns to create a non-linear decision boundary that separates the XOR classes, demonstrating the power of neural networks to solve non-linearly separable problems.'
+    }
   },
   {
     id: 'svm',
@@ -329,6 +662,74 @@ export const algorithms: Algorithm[] = [
         animation: 'fadeInUp',
         code: 'prediction = sign(Σα_i*y_i*K(x_i, x_new) + b)'
       }
-    ]
+    ],
+    mathematicalExample: {
+      title: 'Text Classification with SVM',
+      dataset: {
+        description: 'Classifying emails as spam or not spam using word frequencies',
+        features: ['Word_Frequency_1', 'Word_Frequency_2', 'Class'],
+        data: [
+          [1, 1, -1],
+          [2, 2, -1],
+          [2, 0, -1],
+          [0, 0, -1],
+          [4, 4, 1],
+          [4, 0, 1],
+          [0, 4, 1],
+          [5, 5, 1]
+        ]
+      },
+      calculations: [
+        {
+          step: 1,
+          title: 'Scale Features',
+          formula: 'X_scaled = (X - mean) / std',
+          calculation: 'Original data range: [0, 5]\nMean: [2.25, 2.0], Std: [1.83, 1.93]\nScaled data range: approximately [-1.2, 1.5]',
+          result: 'Features normalized',
+          explanation: 'Feature scaling ensures all dimensions contribute equally to the distance calculations.'
+        },
+        {
+          step: 2,
+          title: 'Choose Linear Kernel',
+          formula: 'K(x_i, x_j) = x_i · x_j (dot product)',
+          calculation: 'Linear kernel selected for this linearly separable problem\nRegularization parameter C = 1.0',
+          result: 'Linear SVM configured',
+          explanation: 'Linear kernel is appropriate when classes can be separated by a straight line/hyperplane.'
+        },
+        {
+          step: 3,
+          title: 'Solve Optimization Problem',
+          formula: 'Minimize: ½||w||² + C∑ξᵢ subject to yᵢ(w·xᵢ + b) ≥ 1 - ξᵢ',
+          calculation: 'Dual formulation:\nMaximize: ∑αᵢ - ½∑∑αᵢαⱼyᵢyⱼ(xᵢ·xⱼ)\nSubject to: ∑αᵢyᵢ = 0, 0 ≤ αᵢ ≤ C',
+          result: 'Optimal α values found',
+          explanation: 'The optimization finds the hyperplane that maximizes the margin between classes.'
+        },
+        {
+          step: 4,
+          title: 'Identify Support Vectors',
+          formula: 'Support vectors: points where αᵢ > 0',
+          calculation: 'Support vectors found:\nSV1: (2, 2, -1) with α₁ = 0.5\nSV2: (4, 0, +1) with α₂ = 0.3\nSV3: (0, 4, +1) with α₃ = 0.2',
+          result: '3 support vectors identified',
+          explanation: 'Support vectors are the critical points that define the decision boundary.'
+        },
+        {
+          step: 5,
+          title: 'Calculate Decision Boundary',
+          formula: 'w = ∑αᵢyᵢxᵢ, b = yₖ - w·xₖ for any support vector k',
+          calculation: 'w = 0.5×(-1)×[2,2] + 0.3×(+1)×[4,0] + 0.2×(+1)×[0,4]\nw = [-1,-1] + [1.2,0] + [0,0.8] = [0.2, -0.2]\nb = -1 - [0.2,-0.2]·[2,2] = -1 - (0.4-0.4) = -1',
+          result: 'Decision boundary: 0.2x₁ - 0.2x₂ - 1 = 0',
+          explanation: 'The hyperplane equation separates spam from non-spam emails.'
+        },
+        {
+          step: 6,
+          title: 'Make Prediction',
+          formula: 'f(x) = sign(w·x + b)',
+          calculation: 'New email with features [3, 1]:\nf([3,1]) = sign([0.2,-0.2]·[3,1] - 1)\n= sign(0.6 - 0.2 - 1) = sign(-0.6) = -1',
+          result: 'Prediction: Not Spam',
+          explanation: 'The new email is classified as not spam since it falls on the negative side of the hyperplane.'
+        }
+      ],
+      finalResult: 'The SVM successfully learned a decision boundary that separates spam from non-spam emails with 100% accuracy on the training data. The model identified 3 support vectors that define the optimal hyperplane with maximum margin. For new emails, the model can classify them based on their position relative to this learned boundary.'
+    }
   }
 ];

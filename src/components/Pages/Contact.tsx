@@ -67,7 +67,7 @@ export const Contact: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -85,17 +85,17 @@ export const Contact: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Contact Form */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-colors">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Send us a Message</h2>
               
               {isSubmitted ? (
                 <div className="text-center py-12">
                   <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Message Sent!</h3>
-                  <p className="text-gray-600">Thank you for reaching out. We'll get back to you within 24 hours.</p>
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Message Sent!</h3>
+                  <p className="text-gray-600 dark:text-gray-300">Thank you for reaching out. We'll get back to you within 24 hours.</p>
                   <button
                     onClick={() => setIsSubmitted(false)}
-                    className="mt-4 text-blue-600 hover:text-blue-700 font-medium"
+                    className="mt-4 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
                   >
                     Send Another Message
                   </button>
@@ -104,7 +104,7 @@ export const Contact: React.FC = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Full Name *
                       </label>
                       <input
@@ -113,12 +113,12 @@ export const Contact: React.FC = () => {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                         placeholder="Your full name"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Email Address *
                       </label>
                       <input
@@ -127,14 +127,14 @@ export const Contact: React.FC = () => {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                         placeholder="your.email@example.com"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Subject *
                     </label>
                     <select
@@ -142,7 +142,7 @@ export const Contact: React.FC = () => {
                       value={formData.subject}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     >
                       <option value="">Select a subject</option>
                       <option value="general">General Inquiry</option>
@@ -155,7 +155,7 @@ export const Contact: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Message *
                     </label>
                     <textarea
@@ -164,7 +164,7 @@ export const Contact: React.FC = () => {
                       onChange={handleChange}
                       required
                       rows={6}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                       placeholder="Tell us how we can help you..."
                     />
                   </div>
@@ -184,8 +184,8 @@ export const Contact: React.FC = () => {
           {/* Contact Info & FAQ */}
           <div className="space-y-8">
             {/* Contact Information */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <h3 className="text-xl font-bold text-gray-900 mb-6">Contact Information</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-colors">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Contact Information</h3>
               <div className="space-y-6">
                 {contactInfo.map((info, index) => {
                   const IconComponent = info.icon;
@@ -195,9 +195,9 @@ export const Contact: React.FC = () => {
                         <IconComponent className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900">{info.title}</h4>
-                        <p className="text-blue-600 font-medium">{info.details}</p>
-                        <p className="text-sm text-gray-600">{info.description}</p>
+                        <h4 className="font-semibold text-gray-900 dark:text-white">{info.title}</h4>
+                        <p className="text-blue-600 dark:text-blue-400 font-medium">{info.details}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{info.description}</p>
                       </div>
                     </div>
                   );
@@ -217,17 +217,17 @@ export const Contact: React.FC = () => {
             </div>
 
             {/* FAQ Preview */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <h3 className="text-xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-colors">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Frequently Asked Questions</h3>
               <div className="space-y-4">
                 {faqs.slice(0, 2).map((faq, index) => (
-                  <div key={index} className="border-b border-gray-200 pb-4 last:border-b-0">
-                    <h4 className="font-semibold text-gray-900 mb-2">{faq.question}</h4>
-                    <p className="text-sm text-gray-600">{faq.answer}</p>
+                  <div key={index} className="border-b border-gray-200 dark:border-gray-700 pb-4 last:border-b-0">
+                    <h4 className="font-semibold text-gray-900 dark:text-white mb-2">{faq.question}</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{faq.answer}</p>
                   </div>
                 ))}
               </div>
-              <button className="mt-4 text-blue-600 hover:text-blue-700 font-medium text-sm">
+              <button className="mt-4 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium text-sm">
                 View All FAQs →
               </button>
             </div>
@@ -237,20 +237,20 @@ export const Contact: React.FC = () => {
         {/* Full FAQ Section */}
         <div className="mt-16">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
-            <p className="text-lg text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Frequently Asked Questions</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300">
               Find answers to common questions about our platform and machine learning
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {faqs.map((faq, index) => (
-              <div key={index} className="bg-white rounded-xl shadow-lg p-6">
+              <div key={index} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-colors">
                 <div className="flex items-start space-x-3">
-                  <MessageCircle className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
+                  <MessageCircle className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-1" />
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">{faq.question}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">{faq.answer}</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{faq.question}</h3>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{faq.answer}</p>
                   </div>
                 </div>
               </div>
