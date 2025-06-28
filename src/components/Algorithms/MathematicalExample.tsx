@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calculator, Play, Pause, RotateCcw, ChevronRight, ChevronDown } from 'lucide-react';
+import { Calculator, Play, Pause, RotateCcw, ChevronRight, ChevronDown, Target } from 'lucide-react';
 import { MathematicalExample as MathExample } from '../../types';
 
 interface MathematicalExampleProps {
@@ -11,6 +11,7 @@ export const MathematicalExample: React.FC<MathematicalExampleProps> = ({ exampl
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showDataset, setShowDataset] = useState(true);
+  const [showPrediction, setShowPrediction] = useState(false);
 
   React.useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -21,6 +22,7 @@ export const MathematicalExample: React.FC<MathematicalExampleProps> = ({ exampl
       }, 3000);
     } else if (isPlaying && currentStep === example.calculations.length - 1) {
       setIsPlaying(false);
+      setShowPrediction(true);
     }
 
     return () => clearInterval(interval);
@@ -33,6 +35,7 @@ export const MathematicalExample: React.FC<MathematicalExampleProps> = ({ exampl
   const handleReset = () => {
     setCurrentStep(0);
     setIsPlaying(false);
+    setShowPrediction(false);
   };
 
   if (!isActive) return null;
@@ -74,7 +77,7 @@ export const MathematicalExample: React.FC<MathematicalExampleProps> = ({ exampl
             className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
           >
             {showDataset ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-            <span className="font-medium">Example Dataset</span>
+            <span className="font-medium">Training Dataset ({example.dataset.data.length} records)</span>
           </button>
           
           {showDataset && (
@@ -90,9 +93,6 @@ export const MathematicalExample: React.FC<MathematicalExampleProps> = ({ exampl
                           {feature}
                         </th>
                       ))}
-                      {example.dataset.labels && (
-                        <th className="text-left py-2 px-3 font-medium text-gray-900 dark:text-white">Target</th>
-                      )}
                     </tr>
                   </thead>
                   <tbody>
@@ -100,14 +100,9 @@ export const MathematicalExample: React.FC<MathematicalExampleProps> = ({ exampl
                       <tr key={rowIndex} className="border-b border-gray-100 dark:border-gray-600">
                         {row.map((cell, cellIndex) => (
                           <td key={cellIndex} className="py-2 px-3 text-gray-700 dark:text-gray-300">
-                            {typeof cell === 'number' ? cell.toFixed(2) : cell}
+                            {typeof cell === 'number' ? cell.toLocaleString() : cell}
                           </td>
                         ))}
-                        {example.dataset.labels && (
-                          <td className="py-2 px-3 text-gray-700 dark:text-gray-300">
-                            {example.dataset.labels[rowIndex]}
-                          </td>
-                        )}
                       </tr>
                     ))}
                   </tbody>
@@ -150,7 +145,7 @@ export const MathematicalExample: React.FC<MathematicalExampleProps> = ({ exampl
                     {index <= currentStep && (
                       <div className="bg-blue-900 dark:bg-blue-800 rounded p-3 font-mono text-sm animate-fade-in">
                         <div className="text-blue-300 mb-1">Calculation:</div>
-                        <div className="text-white">{calc.calculation}</div>
+                        <div className="text-white whitespace-pre-line">{calc.calculation}</div>
                         <div className="text-yellow-300 mt-2">
                           Result: <span className="font-bold">{calc.result}</span>
                         </div>
@@ -174,6 +169,29 @@ export const MathematicalExample: React.FC<MathematicalExampleProps> = ({ exampl
           <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg animate-fade-in">
             <h6 className="font-semibold text-green-800 dark:text-green-300 mb-2">Final Result:</h6>
             <p className="text-green-700 dark:text-green-400">{example.finalResult}</p>
+          </div>
+        )}
+
+        {/* Prediction Example */}
+        {example.prediction && showPrediction && (
+          <div className="mt-6 p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700 rounded-lg animate-fade-in">
+            <div className="flex items-center mb-2">
+              <Target className="w-5 h-5 text-purple-600 dark:text-purple-400 mr-2" />
+              <h6 className="font-semibold text-purple-800 dark:text-purple-300">Prediction Example:</h6>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm text-purple-700 dark:text-purple-400">
+                <strong>New Case:</strong> {Array.isArray(example.prediction.newCase) 
+                  ? example.prediction.newCase.join(', ') 
+                  : example.prediction.newCase}
+              </p>
+              <p className="text-sm text-purple-700 dark:text-purple-400">
+                <strong>Predicted Result:</strong> {example.prediction.result}
+              </p>
+              <p className="text-sm text-purple-600 dark:text-purple-300">
+                {example.prediction.explanation}
+              </p>
+            </div>
           </div>
         )}
 

@@ -8,6 +8,7 @@ import { NeuralNetworkViz } from './Visualizations/NeuralNetworkViz';
 import { SVMViz } from './Visualizations/SVMViz';
 import { PseudocodeDisplay } from './PseudocodeDisplay';
 import { MathematicalExample } from './MathematicalExample';
+import { algorithms } from '../../data/algorithms';
 
 interface StepAnimationProps {
   step: AlgorithmStep;
@@ -72,6 +73,10 @@ export const StepAnimation: React.FC<StepAnimationProps> = ({ step, isActive, al
     }
   };
 
+  const getCurrentAlgorithm = () => {
+    return algorithms.find(algo => algo.id === algorithmId);
+  };
+
   return (
     <div className={`transition-all duration-700 ${getAnimationClass()}`}>
       <div className={`p-6 rounded-xl border-2 transition-all duration-300 ${
@@ -94,7 +99,7 @@ export const StepAnimation: React.FC<StepAnimationProps> = ({ step, isActive, al
               {step.title}
             </h3>
             <p className={`text-sm transition-colors ${
-              isActive ? 'text-blue-700 dark:text-blue-200' : '  text-gray-600 dark:text-gray-300'
+              isActive ? 'text-blue-700 dark:text-blue-200' : 'text-gray-600 dark:text-gray-300'
             }`}>
               {step.description}
             </p>
@@ -125,67 +130,9 @@ export const StepAnimation: React.FC<StepAnimationProps> = ({ step, isActive, al
             </div>
             
             {/* Mathematical Example - only show for the first step */}
-            {step.id === 1 && (
+            {step.id === 1 && getCurrentAlgorithm()?.mathematicalExample && (
               <MathematicalExample 
-                example={
-                  algorithmId === 'linear-regression' ? {
-                    title: 'House Price Prediction Example',
-                    dataset: {
-                      description: 'Predicting house prices based on size (square feet)',
-                      features: ['Size (sq ft)', 'Price ($)'],
-                      data: [
-                        [1000, 150000],
-                        [1200, 180000],
-                        [1500, 225000],
-                        [1800, 270000],
-                        [2000, 300000]
-                      ]
-                    },
-                    calculations: [
-                      {
-                        step: 1,
-                        title: 'Initialize Parameters',
-                        formula: 'θ₀ = 0, θ₁ = 0, α = 0.0001',
-                        calculation: 'Starting with zero weights and learning rate 0.0001',
-                        result: 'θ₀ = 0, θ₁ = 0',
-                        explanation: 'We start with zero parameters and will learn the optimal values through gradient descent.'
-                      },
-                      {
-                        step: 2,
-                        title: 'First Prediction',
-                        formula: 'ŷ = θ₀ + θ₁ × x',
-                        calculation: 'ŷ₁ = 0 + 0 × 1000 = 0',
-                        result: '0',
-                        explanation: 'With zero parameters, our initial predictions are all zero, which is clearly wrong.'
-                      },
-                      {
-                        step: 3,
-                        title: 'Calculate Cost (MSE)',
-                        formula: 'J = (1/2m) × Σ(ŷᵢ - yᵢ)²',
-                        calculation: 'J = (1/10) × [(0-150000)² + (0-180000)² + ... ] = 5.145 × 10¹⁰',
-                        result: '51,450,000,000',
-                        explanation: 'The initial cost is very high because our predictions are far from actual values.'
-                      }
-                    ],
-                    finalResult: 'After many iterations, the algorithm converges to θ₀ ≈ 30,000 and θ₁ ≈ 135, giving us the equation: Price = 30,000 + 135 × Size.'
-                  } : {
-                    title: 'Mathematical Example',
-                    dataset: {
-                      description: 'Example calculation',
-                      features: ['Feature'],
-                      data: [[1]]
-                    },
-                    calculations: [{
-                      step: 1,
-                      title: 'Example Step',
-                      formula: 'Example formula',
-                      calculation: 'Example calculation',
-                      result: 'Example result',
-                      explanation: 'Example explanation'
-                    }],
-                    finalResult: 'Example final result'
-                  }
-                }
+                example={getCurrentAlgorithm()!.mathematicalExample}
                 isActive={isActive}
               />
             )}

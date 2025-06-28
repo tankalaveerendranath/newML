@@ -36,6 +36,11 @@ export interface MathematicalExample {
   };
   calculations: CalculationStep[];
   finalResult: string;
+  prediction?: {
+    newCase: number[];
+    result: string | number;
+    explanation: string;
+  };
 }
 
 export interface CalculationStep {
@@ -68,4 +73,15 @@ export interface DatasetAnalysis {
   fileName: string;
   dataset: Dataset;
   recommendations: DatasetRecommendation[];
+}
+
+export interface CleanedDataset {
+  originalRows: number;
+  cleanedRows: number;
+  removedRows: number;
+  missingValues: number;
+  outliers: number;
+  duplicates: number;
+  cleanedData: any[][];
+  cleaningSteps: string[];
 }
