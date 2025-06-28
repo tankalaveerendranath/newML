@@ -5,12 +5,13 @@ import { Footer } from '../Layout/Footer';
 import { AlgorithmCard } from './AlgorithmCard';
 import { AlgorithmExplainer } from '../Algorithms/AlgorithmExplainer';
 import { DatasetUpload } from '../DatasetUpload/DatasetUpload';
+import { DatasetHistory } from '../DatasetUpload/DatasetHistory';
 import { AboutML } from '../Pages/AboutML';
 import { Contact } from '../Pages/Contact';
 import { algorithms } from '../../data/algorithms';
 import { Algorithm } from '../../types';
 
-type ViewType = 'dashboard' | 'algorithm' | 'dataset' | 'about' | 'contact';
+type ViewType = 'dashboard' | 'algorithm' | 'dataset' | 'history' | 'about' | 'contact';
 
 export const Dashboard: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewType>('dashboard');
@@ -33,7 +34,7 @@ export const Dashboard: React.FC = () => {
 
   if (currentView === 'algorithm' && selectedAlgorithm) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors">
         <Header currentView={currentView} onNavigate={handleNavigate} />
         <div className="flex-1">
           <AlgorithmExplainer 
@@ -48,10 +49,22 @@ export const Dashboard: React.FC = () => {
 
   if (currentView === 'dataset') {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors">
         <Header currentView={currentView} onNavigate={handleNavigate} />
-        <div className="flex-1 bg-gray-50">
+        <div className="flex-1">
           <DatasetUpload onBack={handleBackToDashboard} />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (currentView === 'history') {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors">
+        <Header currentView={currentView} onNavigate={handleNavigate} />
+        <div className="flex-1">
+          <DatasetHistory onBack={handleBackToDashboard} />
         </div>
         <Footer />
       </div>
@@ -83,19 +96,19 @@ export const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors">
       <Header currentView={currentView} onNavigate={handleNavigate} />
       
-      <main className="flex-1 bg-gray-50">
+      <main className="flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Hero Section */}
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Explore Machine Learning Algorithms
             </h2>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
               Discover how different ML algorithms work through interactive explanations, 
-              step-by-step animations, and intelligent dataset analysis.
+              step-by-step animations, mathematical examples, and intelligent dataset analysis.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -108,7 +121,7 @@ export const Dashboard: React.FC = () => {
               </button>
               <button 
                 onClick={() => setCurrentView('about')}
-                className="inline-flex items-center px-6 py-3 bg-white text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors border border-gray-300 shadow-sm"
+                className="inline-flex items-center px-6 py-3 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border border-gray-300 dark:border-gray-600 shadow-sm"
               >
                 <Sparkles className="w-5 h-5 mr-2" />
                 Learn About Machine Learning
@@ -118,7 +131,7 @@ export const Dashboard: React.FC = () => {
 
           {/* Algorithm Categories */}
           <div className="mb-8">
-            <h3 className="text-2xl font-semibold text-gray-900 mb-6">Algorithm Categories</h3>
+            <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">Algorithm Categories</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               {['Supervised Learning', 'Unsupervised Learning', 'Ensemble Learning', 'Deep Learning'].map((category) => {

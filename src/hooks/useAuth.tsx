@@ -3,8 +3,8 @@ import { User } from '../types';
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<boolean>;
-  signup: (name: string, email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
+  signup: (name: string, email: string, password: string) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
   isLoading: boolean;
 }
@@ -32,50 +32,74 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<{ success: boolean; message?: string }> => {
     setIsLoading(true);
     
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Simple validation for demo
-    if (email && password.length >= 6) {
-      const user: User = {
-        id: '1',
-        name: email.split('@')[0],
-        email: email
-      };
-      setUser(user);
-      localStorage.setItem('ml-website-user', JSON.stringify(user));
+    // Check if user exists in localStorage
+    const users = JSON.parse(localStorage.getItem('ml-website-users') || '[]');
+    const existingUser = users.find((u: any) => u.email === email);
+    
+    if (!existingUser) {
       setIsLoading(false);
-      return true;
+      return { success: false, message: 'User not found. Please sign up first.' };
     }
     
+    if (existingUser.password !== password) {
+      setIsLoading(false);
+      return { success: false, message: 'Invalid password. Please try again.' };
+    }
+    
+    const user: User = {
+      id: existingUser.id,
+      name: existingUser.name,
+      email: existingUser.email
+    };
+    
+    setUser(user);
+    localStorage.setItem('ml-website-user', JSON.stringify(user));
     setIsLoading(false);
-    return false;
+    return { success: true };
   };
 
-  const signup = async (name: string, email: string, password: string): Promise<boolean> => {
+  const signup = async (name: string, email: string, password: string): Promise<{ success: boolean; message?: string }> => {
     setIsLoading(true);
     
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Simple validation for demo
-    if (name && email && password.length >= 6) {
-      const user: User = {
-        id: '1',
-        name: name,
-        email: email
-      };
-      setUser(user);
-      localStorage.setItem('ml-website-user', JSON.stringify(user));
+    // Check if user already exists
+    const users = JSON.parse(localStorage.getItem('ml-website-users') || '[]');
+    const existingUser = users.find((u: any) => u.email === email);
+    
+    if (existingUser) {
       setIsLoading(false);
-      return true;
+      return { success: false, message: 'User already exists. Please sign in instead.' };
     }
     
+    // Create new user
+    const newUser = {
+      id: Date.now().toString(),
+      name,
+      email,
+      password
+    };
+    
+    users.push(newUser);
+    localStorage.setItem('ml-website-users', JSON.stringify(users));
+    
+    const user: User = {
+      id: newUser.id,
+      name: newUser.name,
+      email: newUser.email
+    };
+    
+    setUser(user);
+    localStorage.setItem('ml-website-user', JSON.stringify(user));
     setIsLoading(false);
-    return false;
+    return { success: true };
   };
 
   const logout = () => {

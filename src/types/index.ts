@@ -15,6 +15,7 @@ export interface Algorithm {
   pros: string[];
   cons: string[];
   steps: AlgorithmStep[];
+  mathematicalExample: MathematicalExample;
 }
 
 export interface AlgorithmStep {
@@ -23,6 +24,27 @@ export interface AlgorithmStep {
   description: string;
   animation: string;
   code?: string;
+}
+
+export interface MathematicalExample {
+  title: string;
+  dataset: {
+    description: string;
+    data: number[][];
+    labels?: (string | number)[];
+    features: string[];
+  };
+  calculations: CalculationStep[];
+  finalResult: string;
+}
+
+export interface CalculationStep {
+  step: number;
+  title: string;
+  formula: string;
+  calculation: string;
+  result: string | number;
+  explanation: string;
 }
 
 export interface Dataset {
@@ -38,4 +60,12 @@ export interface DatasetRecommendation {
   algorithm: string;
   confidence: number;
   reasoning: string;
+}
+
+export interface DatasetAnalysis {
+  id: string;
+  timestamp: Date;
+  fileName: string;
+  dataset: Dataset;
+  recommendations: DatasetRecommendation[];
 }

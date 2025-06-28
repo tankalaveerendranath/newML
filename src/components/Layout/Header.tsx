@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Brain, Menu, X, Home, BookOpen, Upload, Mail, Info } from 'lucide-react';
+import { Brain, Menu, X, Home, BookOpen, Upload, Mail, Info, Moon, Sun, History } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { useTheme } from '../../contexts/ThemeContext';
 
 interface HeaderProps {
   currentView: string;
@@ -9,17 +10,19 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate }) => {
   const { user, logout } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigationItems = [
     { id: 'dashboard', label: 'Home', icon: Home },
     { id: 'about', label: 'About ML', icon: BookOpen },
     { id: 'dataset', label: 'Dataset Upload', icon: Upload },
+    { id: 'history', label: 'History', icon: History },
     { id: 'contact', label: 'Contact', icon: Mail },
   ];
 
   return (
-    <header className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
+    <header className="bg-white dark:bg-gray-800 shadow-lg border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -34,7 +37,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate }) => {
               <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 ML Algorithms Hub
               </h1>
-              <p className="text-xs text-gray-500 hidden sm:block">Learn • Explore • Discover</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">Learn • Explore • Discover</p>
             </div>
           </div>
           
@@ -48,8 +51,8 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate }) => {
                   onClick={() => onNavigate(item.id)}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
                     currentView === item.id
-                      ? 'bg-blue-100 text-blue-700 shadow-sm'
-                      : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'
+                      ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 shadow-sm'
+                      : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
                   <IconComponent className="w-4 h-4" />
@@ -59,21 +62,29 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate }) => {
             })}
           </nav>
 
-          {/* User Menu & Mobile Toggle */}
+          {/* User Menu & Controls */}
           <div className="flex items-center space-x-4">
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            >
+              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
+
             {user && (
               <div className="hidden sm:flex items-center space-x-3">
-                <div className="flex items-center space-x-2 px-3 py-2 bg-gray-50 rounded-lg">
+                <div className="flex items-center space-x-2 px-3 py-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
                     <span className="text-white text-sm font-medium">
                       {user.name.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <span className="text-gray-700 font-medium">{user.name}</span>
+                  <span className="text-gray-700 dark:text-gray-300 font-medium">{user.name}</span>
                 </div>
                 <button
                   onClick={logout}
-                  className="px-4 py-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors font-medium"
+                  className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors font-medium"
                 >
                   Logout
                 </button>
@@ -83,7 +94,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate }) => {
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+              className="md:hidden p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -92,7 +103,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate }) => {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200 bg-white">
+          <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
             <nav className="space-y-2">
               {navigationItems.map((item) => {
                 const IconComponent = item.icon;
@@ -105,8 +116,8 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate }) => {
                     }}
                     className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-colors ${
                       currentView === item.id
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'
+                        ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+                        : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700'
                     }`}
                   >
                     <IconComponent className="w-5 h-5" />
@@ -116,18 +127,18 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate }) => {
               })}
               
               {user && (
-                <div className="pt-4 border-t border-gray-200 mt-4">
+                <div className="pt-4 border-t border-gray-200 dark:border-gray-700 mt-4">
                   <div className="flex items-center space-x-3 px-4 py-2 mb-2">
                     <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
                       <span className="text-white font-medium">
                         {user.name.charAt(0).toUpperCase()}
                       </span>
                     </div>
-                    <span className="text-gray-700 font-medium">{user.name}</span>
+                    <span className="text-gray-700 dark:text-gray-300 font-medium">{user.name}</span>
                   </div>
                   <button
                     onClick={logout}
-                    className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors font-medium"
+                    className="w-full text-left px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors font-medium"
                   >
                     Logout
                   </button>
