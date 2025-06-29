@@ -8,6 +8,7 @@ import { DatasetUpload } from '../DatasetUpload/DatasetUpload';
 import { DatasetHistory } from '../DatasetUpload/DatasetHistory';
 import { AboutML } from '../Pages/AboutML';
 import { Contact } from '../Pages/Contact';
+import { AnimatedBackground } from './AnimatedBackground';
 import { algorithms } from '../../data/algorithms';
 import { Algorithm } from '../../types';
 
@@ -161,25 +162,40 @@ export const Dashboard: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors relative overflow-hidden">
+      {/* Animated Background */}
+      <AnimatedBackground />
+      
       <Header currentView={currentView} onNavigate={handleNavigate} />
       
-      <main className="flex-1">
+      <main className="flex-1 relative z-10">
         {/* Hero Section */}
-        <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 text-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 text-white relative overflow-hidden">
+          {/* Additional floating elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute top-20 left-10 w-20 h-20 bg-white bg-opacity-10 rounded-full animate-bounce" style={{ animationDelay: '0s', animationDuration: '3s' }}></div>
+            <div className="absolute top-40 right-20 w-16 h-16 bg-white bg-opacity-10 rounded-full animate-bounce" style={{ animationDelay: '1s', animationDuration: '4s' }}></div>
+            <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-white bg-opacity-10 rounded-full animate-bounce" style={{ animationDelay: '2s', animationDuration: '5s' }}></div>
+            
+            {/* Floating ML symbols */}
+            <div className="absolute top-32 right-1/4 text-4xl text-white opacity-20 animate-pulse">∑</div>
+            <div className="absolute bottom-32 left-1/3 text-3xl text-white opacity-20 animate-pulse" style={{ animationDelay: '1s' }}>∂</div>
+            <div className="absolute top-1/2 right-10 text-5xl text-white opacity-20 animate-pulse" style={{ animationDelay: '2s' }}>θ</div>
+          </div>
+          
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
             <div className="text-center">
-              <h1 className="text-5xl font-bold mb-6">
+              <h1 className="text-5xl font-bold mb-6 animate-fade-in-up">
                 Master Machine Learning
                 <span className="block text-blue-200">Through Interactive Examples</span>
               </h1>
-              <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                 Discover how ML algorithms work with step-by-step mathematical explanations, 
                 interactive visualizations, and real dataset examples. From linear regression 
                 to neural networks - learn by doing.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
                 <button
                   onClick={() => setCurrentView('dataset')}
                   className="inline-flex items-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
@@ -197,11 +213,11 @@ export const Dashboard: React.FC = () => {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
                 {stats.map((stat, index) => {
                   const IconComponent = stat.icon;
                   return (
-                    <div key={index} className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-4">
+                    <div key={index} className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-4 hover:bg-opacity-20 transition-all duration-300">
                       <IconComponent className="w-8 h-8 text-blue-200 mx-auto mb-2" />
                       <div className="text-2xl font-bold">{stat.number}</div>
                       <div className="text-sm text-blue-200">{stat.label}</div>
@@ -213,7 +229,7 @@ export const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
           {/* Features Section */}
           <section className="mb-20">
             <div className="text-center mb-12">
@@ -290,15 +306,23 @@ export const Dashboard: React.FC = () => {
 
           {/* What You'll Learn */}
           <section className="mb-20">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-white">
-              <div className="text-center mb-8">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-white relative overflow-hidden">
+              {/* Background pattern */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute top-4 left-4 text-6xl">∇</div>
+                <div className="absolute top-8 right-8 text-4xl">∑</div>
+                <div className="absolute bottom-4 left-8 text-5xl">θ</div>
+                <div className="absolute bottom-8 right-4 text-3xl">α</div>
+              </div>
+              
+              <div className="text-center mb-8 relative z-10">
                 <h2 className="text-3xl font-bold mb-4">What You'll Master</h2>
                 <p className="text-xl text-blue-100">
                   Comprehensive understanding of machine learning through practical examples
                 </p>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
                 <div className="text-center">
                   <Lightbulb className="w-12 h-12 text-yellow-300 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold mb-2">Mathematical Foundation</h3>

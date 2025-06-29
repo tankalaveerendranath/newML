@@ -48,14 +48,14 @@ export const AlgorithmExplainer: React.FC<AlgorithmExplainerProps> = ({ algorith
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900 transition-colors">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
+      <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <button
               onClick={onBack}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+              className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
               <span>Back to Dashboard</span>
@@ -66,8 +66,8 @@ export const AlgorithmExplainer: React.FC<AlgorithmExplainerProps> = ({ algorith
                 onClick={handlePlay}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${
                   isPlaying 
-                    ? 'bg-red-100 text-red-700 hover:bg-red-200' 
-                    : 'bg-green-100 text-green-700 hover:bg-green-200'
+                    ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/30' 
+                    : 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/30'
                 }`}
               >
                 {isPlaying ? (
@@ -85,7 +85,7 @@ export const AlgorithmExplainer: React.FC<AlgorithmExplainerProps> = ({ algorith
               
               <button
                 onClick={handleReset}
-                className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+                className="flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>Reset</span>
@@ -97,21 +97,21 @@ export const AlgorithmExplainer: React.FC<AlgorithmExplainerProps> = ({ algorith
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Algorithm Header */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mb-8 transition-colors">
           <div className="flex flex-col lg:flex-row lg:items-start lg:space-x-8">
             <div className="flex-1">
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">{algorithm.name}</h1>
-              <p className="text-lg text-gray-600 mb-6">{algorithm.description}</p>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{algorithm.name}</h1>
+              <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">{algorithm.description}</p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
                     <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
                     Advantages
                   </h3>
                   <ul className="space-y-2">
                     {algorithm.pros.map((pro, index) => (
-                      <li key={index} className="text-sm text-gray-600 flex items-start">
+                      <li key={index} className="text-sm text-gray-600 dark:text-gray-400 flex items-start">
                         <span className="w-1.5 h-1.5 bg-green-400 rounded-full mt-2 mr-2 flex-shrink-0"></span>
                         {pro}
                       </li>
@@ -120,13 +120,13 @@ export const AlgorithmExplainer: React.FC<AlgorithmExplainerProps> = ({ algorith
                 </div>
                 
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
                     <XCircle className="w-5 h-5 text-red-600 mr-2" />
                     Limitations
                   </h3>
                   <ul className="space-y-2">
                     {algorithm.cons.map((con, index) => (
-                      <li key={index} className="text-sm text-gray-600 flex items-start">
+                      <li key={index} className="text-sm text-gray-600 dark:text-gray-400 flex items-start">
                         <span className="w-1.5 h-1.5 bg-red-400 rounded-full mt-2 mr-2 flex-shrink-0"></span>
                         {con}
                       </li>
@@ -137,20 +137,20 @@ export const AlgorithmExplainer: React.FC<AlgorithmExplainerProps> = ({ algorith
             </div>
             
             <div className="lg:w-80 mt-6 lg:mt-0">
-              <div className="bg-gray-50 rounded-xl p-6">
-                <h3 className="font-semibold text-gray-900 mb-4">Algorithm Details</h3>
+              <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6 transition-colors">
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Algorithm Details</h3>
                 <div className="space-y-3">
                   <div>
-                    <span className="text-sm text-gray-500">Category:</span>
-                    <span className="ml-2 text-sm font-medium text-gray-900">{algorithm.category}</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Category:</span>
+                    <span className="ml-2 text-sm font-medium text-gray-900 dark:text-white">{algorithm.category}</span>
                   </div>
                   <div>
-                    <span className="text-sm text-gray-500">Complexity:</span>
-                    <span className="ml-2 text-sm font-medium text-gray-900">{algorithm.complexity}</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Complexity:</span>
+                    <span className="ml-2 text-sm font-medium text-gray-900 dark:text-white">{algorithm.complexity}</span>
                   </div>
                   <div>
-                    <span className="text-sm text-gray-500">Common Use Cases:</span>
-                    <p className="text-sm text-gray-700 mt-1">{algorithm.useCase}</p>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Common Use Cases:</span>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{algorithm.useCase}</p>
                   </div>
                 </div>
               </div>
@@ -159,15 +159,15 @@ export const AlgorithmExplainer: React.FC<AlgorithmExplainerProps> = ({ algorith
         </div>
 
         {/* Progress Bar */}
-        <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-8 transition-colors">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-900">Learning Progress</h2>
-            <span className="text-sm text-gray-500">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Learning Progress</h2>
+            <span className="text-sm text-gray-500 dark:text-gray-400">
               Step {currentStep + 1} of {algorithm.steps.length}
             </span>
           </div>
           
-          <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-4">
             <div 
               className="bg-blue-600 h-2 rounded-full transition-all duration-500"
               style={{ width: `${((currentStep + 1) / algorithm.steps.length) * 100}%` }}
@@ -183,8 +183,8 @@ export const AlgorithmExplainer: React.FC<AlgorithmExplainerProps> = ({ algorith
                   index === currentStep
                     ? 'bg-blue-600 text-white'
                     : completedSteps.has(index)
-                    ? 'bg-green-100 text-green-700'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
                 {step.title}
@@ -201,6 +201,7 @@ export const AlgorithmExplainer: React.FC<AlgorithmExplainerProps> = ({ algorith
               step={step}
               isActive={index === currentStep}
               algorithmId={algorithm.id}
+              isLastStep={index === algorithm.steps.length - 1}
             />
           ))}
         </div>
