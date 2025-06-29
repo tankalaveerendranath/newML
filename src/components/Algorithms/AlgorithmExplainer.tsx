@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowLeft, Play, Pause, RotateCcw, CheckCircle, XCircle } from 'lucide-react';
 import { Algorithm } from '../../types';
 import { StepAnimation } from './StepAnimation';
+import { MathematicalExample } from './MathematicalExample';
 
 interface AlgorithmExplainerProps {
   algorithm: Algorithm;
@@ -201,10 +202,27 @@ export const AlgorithmExplainer: React.FC<AlgorithmExplainerProps> = ({ algorith
               step={step}
               isActive={index === currentStep}
               algorithmId={algorithm.id}
-              isLastStep={index === algorithm.steps.length - 1}
             />
           ))}
         </div>
+
+        {/* Mathematical Example - Always visible below all steps */}
+        {algorithm.mathematicalExample && (
+          <div className="mt-12">
+            <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-t-2xl p-6 text-white">
+              <h3 className="text-2xl font-bold mb-2">📊 Complete Mathematical Example</h3>
+              <p className="text-purple-100">
+                See how {algorithm.name} works with real data and step-by-step calculations.
+              </p>
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded-b-2xl border-2 border-purple-200 dark:border-purple-700 transition-colors">
+              <MathematicalExample 
+                example={algorithm.mathematicalExample}
+                isActive={true}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

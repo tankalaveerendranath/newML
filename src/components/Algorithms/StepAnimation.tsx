@@ -7,17 +7,14 @@ import { KMeansViz } from './Visualizations/KMeansViz';
 import { NeuralNetworkViz } from './Visualizations/NeuralNetworkViz';
 import { SVMViz } from './Visualizations/SVMViz';
 import { PseudocodeDisplay } from './PseudocodeDisplay';
-import { MathematicalExample } from './MathematicalExample';
-import { algorithms } from '../../data/algorithms';
 
 interface StepAnimationProps {
   step: AlgorithmStep;
   isActive: boolean;
   algorithmId: string;
-  isLastStep: boolean;
 }
 
-export const StepAnimation: React.FC<StepAnimationProps> = ({ step, isActive, algorithmId, isLastStep }) => {
+export const StepAnimation: React.FC<StepAnimationProps> = ({ step, isActive, algorithmId }) => {
   const [shouldAnimate, setShouldAnimate] = useState(false);
 
   useEffect(() => {
@@ -74,10 +71,6 @@ export const StepAnimation: React.FC<StepAnimationProps> = ({ step, isActive, al
     }
   };
 
-  const getCurrentAlgorithm = () => {
-    return algorithms.find(algo => algo.id === algorithmId);
-  };
-
   return (
     <div className={`transition-all duration-700 ${getAnimationClass()}`}>
       <div className={`p-6 rounded-xl border-2 transition-all duration-300 ${
@@ -132,24 +125,6 @@ export const StepAnimation: React.FC<StepAnimationProps> = ({ step, isActive, al
           </div>
         )}
       </div>
-      
-      {/* Mathematical Example - Show only after the last step */}
-      {isLastStep && isActive && getCurrentAlgorithm()?.mathematicalExample && (
-        <div className="mt-8">
-          <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-t-2xl p-6 text-white">
-            <h3 className="text-2xl font-bold mb-2">📊 Complete Mathematical Example</h3>
-            <p className="text-purple-100">
-              Now that you understand all the steps, let's see how {getCurrentAlgorithm()?.name} works with real data and calculations.
-            </p>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-b-2xl border-2 border-purple-200 dark:border-purple-700">
-            <MathematicalExample 
-              example={getCurrentAlgorithm()!.mathematicalExample}
-              isActive={isActive}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 };
