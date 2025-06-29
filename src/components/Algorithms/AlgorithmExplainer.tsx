@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Play, Pause, RotateCcw, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowLeft, Play, Pause, RotateCcw, CheckCircle, XCircle, Calculator } from 'lucide-react';
 import { Algorithm } from '../../types';
 import { StepAnimation } from './StepAnimation';
 import { MathematicalExample } from './MathematicalExample';
@@ -13,6 +13,7 @@ export const AlgorithmExplainer: React.FC<AlgorithmExplainerProps> = ({ algorith
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+  const [showExample, setShowExample] = useState(false);
 
   React.useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -48,6 +49,10 @@ export const AlgorithmExplainer: React.FC<AlgorithmExplainerProps> = ({ algorith
     setIsPlaying(false);
   };
 
+  const toggleExample = () => {
+    setShowExample(!showExample);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900 transition-colors">
       {/* Header */}
@@ -63,6 +68,19 @@ export const AlgorithmExplainer: React.FC<AlgorithmExplainerProps> = ({ algorith
             </button>
             
             <div className="flex items-center space-x-4">
+              {/* Explain with Example Button */}
+              <button
+                onClick={toggleExample}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                  showExample 
+                    ? 'bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 hover:bg-purple-200 dark:hover:bg-purple-900/30' 
+                    : 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/30'
+                }`}
+              >
+                <Calculator className="w-4 h-4" />
+                <span>{showExample ? 'Hide Example' : 'Explain with an Example'}</span>
+              </button>
+              
               <button
                 onClick={handlePlay}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${
@@ -159,6 +177,27 @@ export const AlgorithmExplainer: React.FC<AlgorithmExplainerProps> = ({ algorith
           </div>
         </div>
 
+        {/* Mathematical Example - Conditionally displayed */}
+        {showExample && algorithm.mathematicalExample && (
+          <div className="mb-8 animate-fade-in">
+            <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-t-2xl p-6 text-white">
+              <h3 className="text-2xl font-bold mb-2 flex items-center">
+                <Calculator className="w-6 h-6 mr-3" />
+                Mathematical Example: {algorithm.mathematicalExample.title}
+              </h3>
+              <p className="text-purple-100">
+                Follow along with real data and step-by-step calculations to understand how {algorithm.name} works in practice.
+              </p>
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded-b-2xl border-2 border-purple-200 dark:border-purple-700 transition-colors">
+              <MathematicalExample 
+                example={algorithm.mathematicalExample}
+                isActive={true}
+              />
+            </div>
+          </div>
+        )}
+
         {/* Progress Bar */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-8 transition-colors">
           <div className="flex items-center justify-between mb-4">
@@ -205,24 +244,6 @@ export const AlgorithmExplainer: React.FC<AlgorithmExplainerProps> = ({ algorith
             />
           ))}
         </div>
-
-        {/* Mathematical Example - Always visible below all steps */}
-        {algorithm.mathematicalExample && (
-          <div className="mt-12">
-            <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-t-2xl p-6 text-white">
-              <h3 className="text-2xl font-bold mb-2">📊 Complete Mathematical Example</h3>
-              <p className="text-purple-100">
-                See how {algorithm.name} works with real data and step-by-step calculations.
-              </p>
-            </div>
-            <div className="bg-white dark:bg-gray-800 rounded-b-2xl border-2 border-purple-200 dark:border-purple-700 transition-colors">
-              <MathematicalExample 
-                example={algorithm.mathematicalExample}
-                isActive={true}
-              />
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
