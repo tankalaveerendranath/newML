@@ -3,6 +3,7 @@ import { ArrowLeft, Upload, FileText, BarChart3, Brain, Zap, Download, CheckCirc
 import { Dataset, DatasetRecommendation, DatasetAnalysis } from '../../types';
 import { useDatasetHistory } from '../../hooks/useDatasetHistory';
 import { useAuth } from '../../hooks/useAuth';
+import { AnimatedBackground } from '../Dashboard/AnimatedBackground';
 
 interface DatasetUploadProps {
   onBack: () => void;
@@ -322,274 +323,282 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <button
-          onClick={onBack}
-          className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span>Back to Dashboard</span>
-        </button>
-        
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dataset Analysis & Recommendations</h1>
-      </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors relative overflow-hidden">
+      {/* Animated Background */}
+      <AnimatedBackground />
+      
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <button
+            onClick={onBack}
+            className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all duration-300 transform hover:scale-105"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Back to Dashboard</span>
+          </button>
+          
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white animate-fade-in">Dataset Analysis & Recommendations</h1>
+        </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Upload Section */}
-        <div className="space-y-6">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-colors">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Upload Your Dataset</h2>
-            
-            <div
-              className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors ${
-                dragActive
-                  ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                  : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
-              }`}
-              onDragEnter={handleDrag}
-              onDragLeave={handleDrag}
-              onDragOver={handleDrag}
-              onDrop={handleDrop}
-            >
-              <Upload className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                Drop your dataset here
-              </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                or click to browse your files
-              </p>
-              <input
-                type="file"
-                onChange={handleFileChange}
-                accept=".csv,.json,.xlsx,.xls"
-                className="hidden"
-                id="file-upload"
-              />
-              <label
-                htmlFor="file-upload"
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-colors"
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Upload Section */}
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-colors animate-fade-in">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
+                <Upload className="w-6 h-6 mr-2 animate-bounce" />
+                Upload Your Dataset
+              </h2>
+              
+              <div
+                className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 ${
+                  dragActive
+                    ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/20 scale-105'
+                    : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
+                }`}
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
               >
-                Choose File
-              </label>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
-                Supported formats: CSV, JSON, Excel (.xlsx, .xls)
-              </p>
+                <Upload className={`w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4 ${dragActive ? 'animate-bounce' : 'animate-pulse'}`} />
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                  Drop your dataset here
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  or click to browse your files
+                </p>
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  accept=".csv,.json,.xlsx,.xls"
+                  className="hidden"
+                  id="file-upload"
+                />
+                <label
+                  htmlFor="file-upload"
+                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-all duration-300 transform hover:scale-105"
+                >
+                  Choose File
+                </label>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
+                  Supported formats: CSV, JSON, Excel (.xlsx, .xls)
+                </p>
+              </div>
+
+              {file && (
+                <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg animate-fade-in">
+                  <div className="flex items-center space-x-3">
+                    <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400 animate-pulse" />
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-white">{file.name}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {(file.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {file && (
-              <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                  <div>
-                    <p className="font-medium text-gray-900 dark:text-white">{file.name}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {(file.size / 1024 / 1024).toFixed(2)} MB
-                    </p>
+            {/* Dataset Info */}
+            {dataset && (
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-colors animate-fade-in">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                  <BarChart3 className="w-5 h-5 mr-2 animate-pulse" />
+                  Dataset Overview
+                </h3>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg hover:scale-105 transition-transform">
+                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{dataset.samples.toLocaleString()}</div>
+                    <div className="text-sm text-blue-700 dark:text-blue-300">Samples</div>
+                  </div>
+                  <div className="text-center p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg hover:scale-105 transition-transform">
+                    <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{dataset.features}</div>
+                    <div className="text-sm text-emerald-700 dark:text-emerald-300">Features</div>
+                  </div>
+                  <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg hover:scale-105 transition-transform">
+                    <div className="text-sm font-medium text-purple-600 dark:text-purple-400 capitalize">{dataset.type}</div>
+                    <div className="text-xs text-purple-700 dark:text-purple-300">Data Type</div>
+                  </div>
+                  <div className="text-center p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg hover:scale-105 transition-transform">
+                    <div className="text-sm font-medium text-orange-600 dark:text-orange-400 capitalize">{dataset.target}</div>
+                    <div className="text-xs text-orange-700 dark:text-orange-300">Problem Type</div>
                   </div>
                 </div>
               </div>
             )}
-          </div>
 
-          {/* Dataset Info */}
-          {dataset && (
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-colors">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                <BarChart3 className="w-5 h-5 mr-2" />
-                Dataset Overview
-              </h3>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{dataset.samples.toLocaleString()}</div>
-                  <div className="text-sm text-blue-700 dark:text-blue-300">Samples</div>
+            {/* Data Cleaning Results */}
+            {cleanedDataset && (
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-colors animate-fade-in">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                    <CheckCircle className="w-5 h-5 mr-2 text-green-600 animate-pulse" />
+                    Data Cleaning Results
+                  </h3>
+                  <button
+                    onClick={downloadCleanedData}
+                    className="flex items-center space-x-2 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-300 text-sm transform hover:scale-105"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Download Cleaned Data</span>
+                  </button>
                 </div>
-                <div className="text-center p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
-                  <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{dataset.features}</div>
-                  <div className="text-sm text-emerald-700 dark:text-emerald-300">Features</div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:scale-105 transition-transform">
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">{cleanedDataset.originalRows.toLocaleString()}</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Original Rows</div>
+                  </div>
+                  <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg hover:scale-105 transition-transform">
+                    <div className="text-lg font-bold text-green-600 dark:text-green-400">{cleanedDataset.cleanedRows.toLocaleString()}</div>
+                    <div className="text-xs text-green-700 dark:text-green-300">Cleaned Rows</div>
+                  </div>
                 </div>
-                <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                  <div className="text-sm font-medium text-purple-600 dark:text-purple-400 capitalize">{dataset.type}</div>
-                  <div className="text-xs text-purple-700 dark:text-purple-300">Data Type</div>
-                </div>
-                <div className="text-center p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                  <div className="text-sm font-medium text-orange-600 dark:text-orange-400 capitalize">{dataset.target}</div>
-                  <div className="text-xs text-orange-700 dark:text-orange-300">Problem Type</div>
-                </div>
-              </div>
-            </div>
-          )}
 
-          {/* Data Cleaning Results */}
-          {cleanedDataset && (
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-colors">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-                  <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
-                  Data Cleaning Results
-                </h3>
+                <div className="space-y-2 mb-4">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600 dark:text-gray-400">Missing values removed:</span>
+                    <span className="font-medium text-red-600 dark:text-red-400">{cleanedDataset.missingValues}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600 dark:text-gray-400">Outliers removed:</span>
+                    <span className="font-medium text-red-600 dark:text-red-400">{cleanedDataset.outliers}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600 dark:text-gray-400">Duplicates removed:</span>
+                    <span className="font-medium text-red-600 dark:text-red-400">{cleanedDataset.duplicates}</span>
+                  </div>
+                </div>
+
+                <div className="border-t border-gray-200 dark:border-gray-600 pt-4">
+                  <h4 className="font-medium text-gray-900 dark:text-white mb-2">Cleaning Steps Applied:</h4>
+                  <ul className="space-y-1">
+                    {cleanedDataset.cleaningSteps.map((step, index) => (
+                      <li key={index} className="text-sm text-gray-600 dark:text-gray-400 flex items-center animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                        <CheckCircle className="w-3 h-3 text-green-500 mr-2 flex-shrink-0 animate-pulse" />
+                        {step}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
                 <button
-                  onClick={downloadCleanedData}
-                  className="flex items-center space-x-2 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+                  onClick={() => setShowCleanedData(!showCleanedData)}
+                  className="mt-4 w-full text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium transition-colors"
                 >
-                  <Download className="w-4 h-4" />
-                  <span>Download Cleaned Data</span>
+                  {showCleanedData ? 'Hide' : 'Show'} Cleaned Data Preview
                 </button>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="text-lg font-bold text-gray-900 dark:text-white">{cleanedDataset.originalRows.toLocaleString()}</div>
-                  <div className="text-xs text-gray-600 dark:text-gray-400">Original Rows</div>
-                </div>
-                <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                  <div className="text-lg font-bold text-green-600 dark:text-green-400">{cleanedDataset.cleanedRows.toLocaleString()}</div>
-                  <div className="text-xs text-green-700 dark:text-green-300">Cleaned Rows</div>
-                </div>
-              </div>
 
-              <div className="space-y-2 mb-4">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">Missing values removed:</span>
-                  <span className="font-medium text-red-600 dark:text-red-400">{cleanedDataset.missingValues}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">Outliers removed:</span>
-                  <span className="font-medium text-red-600 dark:text-red-400">{cleanedDataset.outliers}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">Duplicates removed:</span>
-                  <span className="font-medium text-red-600 dark:text-red-400">{cleanedDataset.duplicates}</span>
-                </div>
-              </div>
-
-              <div className="border-t border-gray-200 dark:border-gray-600 pt-4">
-                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Cleaning Steps Applied:</h4>
-                <ul className="space-y-1">
-                  {cleanedDataset.cleaningSteps.map((step, index) => (
-                    <li key={index} className="text-sm text-gray-600 dark:text-gray-400 flex items-center">
-                      <CheckCircle className="w-3 h-3 text-green-500 mr-2 flex-shrink-0" />
-                      {step}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <button
-                onClick={() => setShowCleanedData(!showCleanedData)}
-                className="mt-4 w-full text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium"
-              >
-                {showCleanedData ? 'Hide' : 'Show'} Cleaned Data Preview
-              </button>
-
-              {showCleanedData && (
-                <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full text-xs">
-                      <thead>
-                        <tr className="border-b border-gray-200 dark:border-gray-600">
-                          {cleanedDataset.headers.map((header, index) => (
-                            <th key={index} className="text-left py-2 px-2 font-medium text-gray-900 dark:text-white">
-                              {header}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {cleanedDataset.cleanedData.slice(0, 5).map((row, rowIndex) => (
-                          <tr key={rowIndex} className="border-b border-gray-100 dark:border-gray-600">
-                            {row.map((cell, cellIndex) => (
-                              <td key={cellIndex} className="py-2 px-2 text-gray-700 dark:text-gray-300">
-                                {cell === null || cell === undefined ? 'N/A' : 
-                                 typeof cell === 'number' ? cell.toLocaleString() : String(cell)}
-                              </td>
+                {showCleanedData && (
+                  <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg animate-fade-in">
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full text-xs">
+                        <thead>
+                          <tr className="border-b border-gray-200 dark:border-gray-600">
+                            {cleanedDataset.headers.map((header, index) => (
+                              <th key={index} className="text-left py-2 px-2 font-medium text-gray-900 dark:text-white">
+                                {header}
+                              </th>
                             ))}
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {cleanedDataset.cleanedData.slice(0, 5).map((row, rowIndex) => (
+                            <tr key={rowIndex} className="border-b border-gray-100 dark:border-gray-600">
+                              {row.map((cell, cellIndex) => (
+                                <td key={cellIndex} className="py-2 px-2 text-gray-700 dark:text-gray-300">
+                                  {cell === null || cell === undefined ? 'N/A' : 
+                                   typeof cell === 'number' ? cell.toLocaleString() : String(cell)}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                      Showing first 5 rows of cleaned data with original column values preserved
+                    </p>
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                    Showing first 5 rows of cleaned data with original column values preserved
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Analysis & Recommendations */}
+          <div className="space-y-6">
+            {isAnalyzing && (
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center transition-colors animate-fade-in">
+                <Brain className="w-12 h-12 text-blue-600 dark:text-blue-400 mx-auto mb-4 animate-pulse" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Analyzing Dataset...</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">Our AI is examining your data and performing cleaning operations to provide the best algorithm recommendations.</p>
+                <div className="space-y-2">
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div className="bg-blue-600 dark:bg-blue-400 h-2 rounded-full animate-pulse" style={{ width: '66%' }}></div>
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Processing data and preserving original values...</p>
+                </div>
+              </div>
+            )}
+
+            {recommendations.length > 0 && (
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-colors animate-fade-in">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
+                  <Zap className="w-5 h-5 mr-2 text-yellow-500 animate-pulse" />
+                  Algorithm Recommendations
+                </h3>
+                
+                <div className="space-y-4">
+                  {recommendations.map((rec, index) => (
+                    <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-blue-300 dark:hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-1 animate-fade-in" style={{ animationDelay: `${index * 0.2}s` }}>
+                      <div className="flex items-start justify-between mb-2">
+                        <h4 className="font-medium text-gray-900 dark:text-white">{rec.algorithm}</h4>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getConfidenceColor(rec.confidence)} animate-pulse`}>
+                          {rec.confidence}% match
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{rec.reasoning}</p>
+                      
+                      <div className="mt-3 flex items-center justify-between">
+                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
+                          <div 
+                            className="bg-blue-600 dark:bg-blue-400 h-2 rounded-full transition-all duration-1000"
+                            style={{ width: `${rec.confidence}%` }}
+                          ></div>
+                        </div>
+                        <button className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium whitespace-nowrap transition-colors">
+                          Learn More
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg animate-fade-in">
+                  <p className="text-sm text-blue-700 dark:text-blue-300">
+                    <strong>Pro Tip:</strong> These recommendations are based on your cleaned dataset characteristics. 
+                    The data cleaning process preserved original column values while removing {cleanedDataset?.removedRows || 0} problematic rows, 
+                    which should lead to better model performance.
                   </p>
                 </div>
-              )}
-            </div>
-          )}
-        </div>
+              </div>
+            )}
 
-        {/* Analysis & Recommendations */}
-        <div className="space-y-6">
-          {isAnalyzing && (
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center transition-colors">
-              <Brain className="w-12 h-12 text-blue-600 dark:text-blue-400 mx-auto mb-4 animate-pulse" />
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Analyzing Dataset...</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">Our AI is examining your data and performing cleaning operations to provide the best algorithm recommendations.</p>
-              <div className="space-y-2">
-                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                  <div className="bg-blue-600 dark:bg-blue-400 h-2 rounded-full animate-pulse" style={{ width: '66%' }}></div>
+            {!isAnalyzing && !file && (
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center transition-colors animate-fade-in">
+                <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Brain className="w-8 h-8 text-gray-400 dark:text-gray-500 animate-pulse" />
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Processing data and preserving original values...</p>
-              </div>
-            </div>
-          )}
-
-          {recommendations.length > 0 && (
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-colors">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
-                <Zap className="w-5 h-5 mr-2 text-yellow-500" />
-                Algorithm Recommendations
-              </h3>
-              
-              <div className="space-y-4">
-                {recommendations.map((rec, index) => (
-                  <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-blue-300 dark:hover:border-blue-500 transition-colors">
-                    <div className="flex items-start justify-between mb-2">
-                      <h4 className="font-medium text-gray-900 dark:text-white">{rec.algorithm}</h4>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getConfidenceColor(rec.confidence)}`}>
-                        {rec.confidence}% match
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{rec.reasoning}</p>
-                    
-                    <div className="mt-3 flex items-center justify-between">
-                      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
-                        <div 
-                          className="bg-blue-600 dark:bg-blue-400 h-2 rounded-full transition-all duration-500"
-                          style={{ width: `${rec.confidence}%` }}
-                        ></div>
-                      </div>
-                      <button className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium whitespace-nowrap">
-                        Learn More
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <p className="text-sm text-blue-700 dark:text-blue-300">
-                  <strong>Pro Tip:</strong> These recommendations are based on your cleaned dataset characteristics. 
-                  The data cleaning process preserved original column values while removing {cleanedDataset?.removedRows || 0} problematic rows, 
-                  which should lead to better model performance.
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Ready to Analyze</h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Upload your dataset to get personalized algorithm recommendations and automatic data cleaning with preserved original values.
                 </p>
               </div>
-            </div>
-          )}
-
-          {!isAnalyzing && !file && (
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center transition-colors">
-              <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Brain className="w-8 h-8 text-gray-400 dark:text-gray-500" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Ready to Analyze</h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                Upload your dataset to get personalized algorithm recommendations and automatic data cleaning with preserved original values.
-              </p>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>

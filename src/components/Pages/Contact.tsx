@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, MessageCircle, Clock, CheckCircle } from 'lucide-react';
+import { AnimatedBackground } from '../Dashboard/AnimatedBackground';
 
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -67,13 +68,28 @@ export const Contact: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors relative overflow-hidden">
+      {/* Animated Background */}
+      <AnimatedBackground />
+      
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white relative overflow-hidden">
+        {/* Additional floating elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-20 left-10 w-20 h-20 bg-white bg-opacity-10 rounded-full animate-bounce" style={{ animationDelay: '0s', animationDuration: '4s' }}></div>
+          <div className="absolute top-40 right-20 w-16 h-16 bg-white bg-opacity-10 rounded-full animate-bounce" style={{ animationDelay: '1s', animationDuration: '5s' }}></div>
+          <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-white bg-opacity-10 rounded-full animate-bounce" style={{ animationDelay: '2s', animationDuration: '6s' }}></div>
+          
+          {/* Floating contact symbols */}
+          <div className="absolute top-32 right-1/4 text-6xl text-white opacity-20 animate-pulse">@</div>
+          <div className="absolute bottom-32 left-1/3 text-4xl text-white opacity-20 animate-pulse" style={{ animationDelay: '1s' }}>📧</div>
+          <div className="absolute top-1/2 right-10 text-7xl text-white opacity-20 animate-pulse" style={{ animationDelay: '2s' }}>📞</div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
           <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4">Get in Touch</h1>
-            <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+            <h1 className="text-4xl font-bold mb-4 animate-fade-in-up">Get in Touch</h1>
+            <p className="text-xl text-blue-100 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
               Have questions about machine learning algorithms? Need help with your project? 
               We're here to help you on your ML journey.
             </p>
@@ -81,21 +97,24 @@ export const Contact: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Contact Form */}
           <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-colors">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Send us a Message</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-colors animate-fade-in">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                <Send className="w-6 h-6 mr-2 animate-pulse" />
+                Send us a Message
+              </h2>
               
               {isSubmitted ? (
-                <div className="text-center py-12">
-                  <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                <div className="text-center py-12 animate-fade-in">
+                  <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4 animate-bounce" />
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Message Sent!</h3>
                   <p className="text-gray-600 dark:text-gray-300">Thank you for reaching out. We'll get back to you within 24 hours.</p>
                   <button
                     onClick={() => setIsSubmitted(false)}
-                    className="mt-4 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+                    className="mt-4 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors"
                   >
                     Send Another Message
                   </button>
@@ -103,7 +122,7 @@ export const Contact: React.FC = () => {
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
+                    <div className="animate-fade-in">
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Full Name *
                       </label>
@@ -113,11 +132,11 @@ export const Contact: React.FC = () => {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white hover:shadow-md"
                         placeholder="Your full name"
                       />
                     </div>
-                    <div>
+                    <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Email Address *
                       </label>
@@ -127,13 +146,13 @@ export const Contact: React.FC = () => {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white hover:shadow-md"
                         placeholder="your.email@example.com"
                       />
                     </div>
                   </div>
 
-                  <div>
+                  <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Subject *
                     </label>
@@ -142,7 +161,7 @@ export const Contact: React.FC = () => {
                       value={formData.subject}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white hover:shadow-md"
                     >
                       <option value="">Select a subject</option>
                       <option value="general">General Inquiry</option>
@@ -154,7 +173,7 @@ export const Contact: React.FC = () => {
                     </select>
                   </div>
 
-                  <div>
+                  <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Message *
                     </label>
@@ -164,14 +183,15 @@ export const Contact: React.FC = () => {
                       onChange={handleChange}
                       required
                       rows={6}
-                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white hover:shadow-md"
                       placeholder="Tell us how we can help you..."
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center space-x-2"
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 flex items-center justify-center space-x-2 transform hover:scale-105 animate-fade-in"
+                    style={{ animationDelay: '0.4s' }}
                   >
                     <Send className="w-5 h-5" />
                     <span>Send Message</span>
@@ -184,14 +204,14 @@ export const Contact: React.FC = () => {
           {/* Contact Info & FAQ */}
           <div className="space-y-8">
             {/* Contact Information */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-colors">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-colors animate-fade-in">
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Contact Information</h3>
               <div className="space-y-6">
                 {contactInfo.map((info, index) => {
                   const IconComponent = info.icon;
                   return (
-                    <div key={index} className="flex items-start space-x-4">
-                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div key={index} className="flex items-start space-x-4 animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center flex-shrink-0 animate-pulse">
                         <IconComponent className="w-6 h-6 text-white" />
                       </div>
                       <div>
@@ -206,9 +226,9 @@ export const Contact: React.FC = () => {
             </div>
 
             {/* Response Time */}
-            <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl p-6 text-white">
+            <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl p-6 text-white animate-fade-in">
               <div className="flex items-center space-x-3 mb-3">
-                <Clock className="w-6 h-6" />
+                <Clock className="w-6 h-6 animate-pulse" />
                 <h3 className="text-lg font-semibold">Quick Response</h3>
               </div>
               <p className="text-green-100">
@@ -217,17 +237,17 @@ export const Contact: React.FC = () => {
             </div>
 
             {/* FAQ Preview */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-colors">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-colors animate-fade-in">
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Frequently Asked Questions</h3>
               <div className="space-y-4">
                 {faqs.slice(0, 2).map((faq, index) => (
-                  <div key={index} className="border-b border-gray-200 dark:border-gray-700 pb-4 last:border-b-0">
+                  <div key={index} className="border-b border-gray-200 dark:border-gray-700 pb-4 last:border-b-0 animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
                     <h4 className="font-semibold text-gray-900 dark:text-white mb-2">{faq.question}</h4>
                     <p className="text-sm text-gray-600 dark:text-gray-400">{faq.answer}</p>
                   </div>
                 ))}
               </div>
-              <button className="mt-4 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium text-sm">
+              <button className="mt-4 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium text-sm transition-colors">
                 View All FAQs →
               </button>
             </div>
@@ -237,17 +257,17 @@ export const Contact: React.FC = () => {
         {/* Full FAQ Section */}
         <div className="mt-16">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Frequently Asked Questions</h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 animate-fade-in">Frequently Asked Questions</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 animate-fade-in" style={{ animationDelay: '0.2s' }}>
               Find answers to common questions about our platform and machine learning
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {faqs.map((faq, index) => (
-              <div key={index} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-colors">
+              <div key={index} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1 animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
                 <div className="flex items-start space-x-3">
-                  <MessageCircle className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-1" />
+                  <MessageCircle className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-1 animate-pulse" />
                   <div>
                     <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{faq.question}</h3>
                     <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{faq.answer}</p>

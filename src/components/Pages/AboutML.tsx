@@ -1,5 +1,6 @@
 import React from 'react';
 import { Brain, Zap, Target, TrendingUp, GitBranch, Circle, Trees, SeparatorVertical as Separator, ArrowRight, CheckCircle, Star, Users, Award } from 'lucide-react';
+import { AnimatedBackground } from '../Dashboard/AnimatedBackground';
 
 export const AboutML: React.FC = () => {
   const mlTypes = [
@@ -125,33 +126,49 @@ export const AboutML: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors relative overflow-hidden">
+      {/* Animated Background */}
+      <AnimatedBackground />
+      
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 text-white relative overflow-hidden">
+        {/* Additional floating elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-20 left-10 w-20 h-20 bg-white bg-opacity-10 rounded-full animate-bounce" style={{ animationDelay: '0s', animationDuration: '4s' }}></div>
+          <div className="absolute top-40 right-20 w-16 h-16 bg-white bg-opacity-10 rounded-full animate-bounce" style={{ animationDelay: '1s', animationDuration: '5s' }}></div>
+          <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-white bg-opacity-10 rounded-full animate-bounce" style={{ animationDelay: '2s', animationDuration: '6s' }}></div>
+          
+          {/* Floating ML symbols */}
+          <div className="absolute top-32 right-1/4 text-6xl text-white opacity-20 animate-pulse">∑</div>
+          <div className="absolute bottom-32 left-1/3 text-4xl text-white opacity-20 animate-pulse" style={{ animationDelay: '1s' }}>∂</div>
+          <div className="absolute top-1/2 right-10 text-7xl text-white opacity-20 animate-pulse" style={{ animationDelay: '2s' }}>θ</div>
+          <div className="absolute top-1/4 left-10 text-5xl text-white opacity-20 animate-pulse" style={{ animationDelay: '3s' }}>α</div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
           <div className="text-center">
             <div className="flex justify-center mb-6">
-              <div className="p-4 bg-white bg-opacity-20 rounded-full">
-                <Brain className="w-16 h-16 text-white" />
+              <div className="p-4 bg-white bg-opacity-20 rounded-full animate-bounce" style={{ animationDuration: '3s' }}>
+                <Brain className="w-16 h-16 text-white animate-pulse" />
               </div>
             </div>
-            <h1 className="text-5xl font-bold mb-6">
+            <h1 className="text-5xl font-bold mb-6 animate-fade-in-up">
               What is Machine Learning?
             </h1>
-            <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-8 leading-relaxed">
+            <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-8 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
               Machine Learning is a subset of artificial intelligence that enables computers to learn 
               and make decisions from data without being explicitly programmed for every scenario.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <div className="bg-white bg-opacity-20 px-6 py-3 rounded-lg">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+              <div className="bg-white bg-opacity-20 px-6 py-3 rounded-lg hover:bg-opacity-30 transition-all duration-300 transform hover:scale-105">
                 <div className="text-2xl font-bold">6+</div>
                 <div className="text-sm text-blue-100">Algorithms Covered</div>
               </div>
-              <div className="bg-white bg-opacity-20 px-6 py-3 rounded-lg">
+              <div className="bg-white bg-opacity-20 px-6 py-3 rounded-lg hover:bg-opacity-30 transition-all duration-300 transform hover:scale-105">
                 <div className="text-2xl font-bold">Interactive</div>
                 <div className="text-sm text-blue-100">Learning Experience</div>
               </div>
-              <div className="bg-white bg-opacity-20 px-6 py-3 rounded-lg">
+              <div className="bg-white bg-opacity-20 px-6 py-3 rounded-lg hover:bg-opacity-30 transition-all duration-300 transform hover:scale-105">
                 <div className="text-2xl font-bold">Step-by-Step</div>
                 <div className="text-sm text-blue-100">Explanations</div>
               </div>
@@ -160,12 +177,12 @@ export const AboutML: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
         {/* Types of Machine Learning */}
         <section className="mb-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Types of Machine Learning</h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 animate-fade-in">Types of Machine Learning</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
               Understanding the three main categories of machine learning and their applications
             </p>
           </div>
@@ -174,8 +191,8 @@ export const AboutML: React.FC = () => {
             {mlTypes.map((type, index) => {
               const IconComponent = type.icon;
               return (
-                <div key={index} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300">
-                  <div className={`w-16 h-16 bg-gradient-to-r ${type.color} rounded-xl flex items-center justify-center mb-6`}>
+                <div key={index} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 animate-fade-in" style={{ animationDelay: `${index * 0.2}s` }}>
+                  <div className={`w-16 h-16 bg-gradient-to-r ${type.color} rounded-xl flex items-center justify-center mb-6 animate-bounce`} style={{ animationDuration: `${3 + index}s` }}>
                     <IconComponent className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{type.title}</h3>
@@ -185,7 +202,7 @@ export const AboutML: React.FC = () => {
                     <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Use Cases:</h4>
                     <div className="flex flex-wrap gap-2">
                       {type.examples.map((example, idx) => (
-                        <span key={idx} className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm">
+                        <span key={idx} className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:scale-105 transition-transform">
                           {example}
                         </span>
                       ))}
@@ -196,8 +213,8 @@ export const AboutML: React.FC = () => {
                     <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Popular Algorithms:</h4>
                     <ul className="space-y-1">
                       {type.algorithms.map((algo, idx) => (
-                        <li key={idx} className="text-sm text-gray-600 dark:text-gray-400 flex items-center">
-                          <CheckCircle className="w-3 h-3 text-green-500 mr-2" />
+                        <li key={idx} className="text-sm text-gray-600 dark:text-gray-400 flex items-center animate-fade-in" style={{ animationDelay: `${(index * 0.2) + (idx * 0.1)}s` }}>
+                          <CheckCircle className="w-3 h-3 text-green-500 mr-2 animate-pulse" />
                           {algo}
                         </li>
                       ))}
@@ -212,8 +229,8 @@ export const AboutML: React.FC = () => {
         {/* ML Workflow */}
         <section className="mb-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Machine Learning Workflow</h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 animate-fade-in">Machine Learning Workflow</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
               The typical process of developing and deploying machine learning solutions
             </p>
           </div>
@@ -223,12 +240,12 @@ export const AboutML: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {mlWorkflow.map((item, index) => (
                 <div key={index} className="relative">
-                  <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+                  <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 animate-fade-in" style={{ animationDelay: `${index * 0.15}s` }}>
                     <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold mr-4 animate-pulse">
                         {item.step}
                       </div>
-                      <div className="text-2xl">{item.icon}</div>
+                      <div className="text-2xl animate-bounce" style={{ animationDelay: `${index * 0.2}s`, animationDuration: '2s' }}>{item.icon}</div>
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{item.title}</h3>
                     <p className="text-gray-600 dark:text-gray-300 mb-3">{item.description}</p>
@@ -238,7 +255,7 @@ export const AboutML: React.FC = () => {
                   {/* Arrow for desktop */}
                   {index < mlWorkflow.length - 1 && (
                     <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
-                      <ArrowRight className="w-8 h-8 text-blue-500" />
+                      <ArrowRight className="w-8 h-8 text-blue-500 animate-pulse" />
                     </div>
                   )}
                 </div>
@@ -250,22 +267,22 @@ export const AboutML: React.FC = () => {
         {/* Applications */}
         <section className="mb-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Real-World Applications</h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 animate-fade-in">Real-World Applications</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
               Machine learning is transforming industries and solving complex problems across various domains
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {applications.map((app, index) => (
-              <div key={index} className={`${app.color} border-2 rounded-xl p-6 transition-colors`}>
+              <div key={index} className={`${app.color} border-2 rounded-xl p-6 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 animate-fade-in`} style={{ animationDelay: `${index * 0.2}s` }}>
                 <div className="flex items-center mb-4">
-                  <div className="text-3xl mr-4">{app.icon}</div>
+                  <div className="text-3xl mr-4 animate-bounce" style={{ animationDelay: `${index * 0.3}s`, animationDuration: '3s' }}>{app.icon}</div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white">{app.category}</h3>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   {app.examples.map((example, idx) => (
-                    <div key={idx} className="bg-white dark:bg-gray-800 bg-opacity-70 dark:bg-opacity-70 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <div key={idx} className="bg-white dark:bg-gray-800 bg-opacity-70 dark:bg-opacity-70 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:scale-105 transition-transform animate-fade-in" style={{ animationDelay: `${(index * 0.2) + (idx * 0.1)}s` }}>
                       {example}
                     </div>
                   ))}
@@ -278,8 +295,8 @@ export const AboutML: React.FC = () => {
         {/* Benefits */}
         <section className="mb-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Why Machine Learning Matters</h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 animate-fade-in">Why Machine Learning Matters</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
               The key benefits that make machine learning essential for modern businesses and research
             </p>
           </div>
@@ -288,8 +305,8 @@ export const AboutML: React.FC = () => {
             {benefits.map((benefit, index) => {
               const IconComponent = benefit.icon;
               return (
-                <div key={index} className="text-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
-                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div key={index} className="text-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 animate-fade-in" style={{ animationDelay: `${index * 0.15}s` }}>
+                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
                     <IconComponent className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{benefit.title}</h3>
@@ -301,19 +318,29 @@ export const AboutML: React.FC = () => {
         </section>
 
         {/* Getting Started */}
-        <section className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-white text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Start Learning?</h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Explore our interactive algorithm explanations and discover which machine learning 
-            techniques work best for your data and use cases.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-              Explore Algorithms
-            </button>
-            <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
-              Upload Dataset
-            </button>
+        <section className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-white text-center relative overflow-hidden animate-fade-in">
+          {/* Background pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-4 left-4 text-6xl animate-pulse">∇</div>
+            <div className="absolute top-8 right-8 text-4xl animate-pulse" style={{ animationDelay: '1s' }}>∑</div>
+            <div className="absolute bottom-4 left-8 text-5xl animate-pulse" style={{ animationDelay: '2s' }}>θ</div>
+            <div className="absolute bottom-8 right-4 text-3xl animate-pulse" style={{ animationDelay: '3s' }}>α</div>
+          </div>
+          
+          <div className="relative z-10">
+            <h2 className="text-3xl font-bold mb-4 animate-fade-in">Ready to Start Learning?</h2>
+            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              Explore our interactive algorithm explanations and discover which machine learning 
+              techniques work best for your data and use cases.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: '0.4s' }}>
+              <button className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">
+                Explore Algorithms
+              </button>
+              <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300 transform hover:scale-105">
+                Upload Dataset
+              </button>
+            </div>
           </div>
         </section>
       </div>
