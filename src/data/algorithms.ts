@@ -56,19 +56,19 @@ export const algorithms: Algorithm[] = [
       }
     ],
     mathematicalExample: {
-      title: 'House Price Prediction Example',
+      title: 'Student Performance Prediction',
       dataset: {
-        description: 'Predicting house prices based on size (square feet)',
-        features: ['Size (sq ft)', 'Price ($)'],
+        description: 'Predicting final exam scores based on study hours, attendance, previous scores, and sleep hours',
+        features: ['Study Hours', 'Attendance %', 'Previous Score', 'Sleep Hours', 'Final Score'],
         data: [
-          [1000, 150000],
-          [1200, 180000],
-          [1500, 225000],
-          [1800, 270000],
-          [2000, 300000],
-          [2200, 330000],
-          [2500, 375000],
-          [2800, 420000]
+          [8, 95, 85, 7, 92],
+          [6, 80, 78, 6, 84],
+          [10, 98, 90, 8, 96],
+          [4, 70, 65, 5, 72],
+          [7, 85, 82, 7, 88],
+          [9, 92, 88, 8, 94],
+          [5, 75, 70, 6, 76],
+          [3, 60, 55, 4, 65]
         ]
       },
       calculations: [
@@ -76,48 +76,56 @@ export const algorithms: Algorithm[] = [
           step: 1,
           title: 'Calculate Mean Values',
           formula: 'x̄ = (1/n) × Σxᵢ, ȳ = (1/n) × Σyᵢ',
-          calculation: 'x̄ = (1000+1200+1500+1800+2000+2200+2500+2800)/8 = 1875\nȳ = (150000+180000+225000+270000+300000+330000+375000+420000)/8 = 281250',
-          result: 'x̄ = 1875, ȳ = 281250',
-          explanation: 'We calculate the mean of both features and target values as starting points for our calculations.'
+          calculation: 'Study Hours: x̄₁ = (8+6+10+4+7+9+5+3)/8 = 6.5\nAttendance: x̄₂ = (95+80+98+70+85+92+75+60)/8 = 81.875\nPrevious Score: x̄₃ = (85+78+90+65+82+88+70+55)/8 = 76.625\nSleep Hours: x̄₄ = (7+6+8+5+7+8+6+4)/8 = 6.375\nFinal Score: ȳ = (92+84+96+72+88+94+76+65)/8 = 83.375',
+          result: 'Means calculated for all features',
+          explanation: 'We calculate the mean of all features and target values as starting points for our linear regression calculations.'
         },
         {
           step: 2,
-          title: 'Calculate Slope (θ₁)',
-          formula: 'θ₁ = Σ((xᵢ - x̄)(yᵢ - ȳ)) / Σ((xᵢ - x̄)²)',
-          calculation: 'Numerator: (-875×-131250) + (-675×-101250) + ... + (925×138750) = 1,687,500,000\nDenominator: (-875)² + (-675)² + ... + (925)² = 3,750,000\nθ₁ = 1,687,500,000 / 3,750,000 = 450',
-          result: 'θ₁ = 450',
-          explanation: 'The slope tells us that for every additional square foot, the house price increases by $450.'
+          title: 'Calculate Correlation Matrix',
+          formula: 'r = Σ((xᵢ - x̄)(yᵢ - ȳ)) / √(Σ(xᵢ - x̄)² × Σ(yᵢ - ȳ)²)',
+          calculation: 'Study Hours vs Final Score: r₁ = 0.89\nAttendance vs Final Score: r₂ = 0.92\nPrevious Score vs Final Score: r₃ = 0.95\nSleep Hours vs Final Score: r₄ = 0.78\nStrongest correlation: Previous Score (0.95)',
+          result: 'Previous Score has highest correlation',
+          explanation: 'Previous academic performance is the strongest predictor of final exam scores.'
         },
         {
           step: 3,
-          title: 'Calculate Intercept (θ₀)',
-          formula: 'θ₀ = ȳ - θ₁ × x̄',
-          calculation: 'θ₀ = 281250 - 450 × 1875 = 281250 - 843750 = -562500',
-          result: 'θ₀ = -562500',
-          explanation: 'The intercept represents the base price when size is zero (theoretical baseline).'
+          title: 'Simple Linear Regression (Previous Score)',
+          formula: 'β₁ = Σ((xᵢ - x̄)(yᵢ - ȳ)) / Σ((xᵢ - x̄)²)',
+          calculation: 'Numerator: (85-76.625)(92-83.375) + ... + (55-76.625)(65-83.375) = 1247.5\nDenominator: (85-76.625)² + ... + (55-76.625)² = 1356.875\nβ₁ = 1247.5 / 1356.875 = 0.919',
+          result: 'Slope β₁ = 0.919',
+          explanation: 'For every 1-point increase in previous score, final score increases by 0.919 points.'
         },
         {
           step: 4,
-          title: 'Final Linear Equation',
-          formula: 'ŷ = θ₀ + θ₁ × x',
-          calculation: 'ŷ = -562500 + 450 × x',
-          result: 'Price = -562500 + 450 × Size',
-          explanation: 'This is our final linear regression equation for predicting house prices.'
+          title: 'Calculate Intercept',
+          formula: 'β₀ = ȳ - β₁ × x̄',
+          calculation: 'β₀ = 83.375 - 0.919 × 76.625 = 83.375 - 70.416 = 12.959',
+          result: 'Intercept β₀ = 12.959',
+          explanation: 'The intercept represents the baseline final score when previous score is zero.'
         },
         {
           step: 5,
-          title: 'Calculate R² (Coefficient of Determination)',
+          title: 'Final Regression Equation',
+          formula: 'ŷ = β₀ + β₁ × x',
+          calculation: 'Final Score = 12.959 + 0.919 × Previous Score',
+          result: 'Final Score = 12.959 + 0.919 × Previous Score',
+          explanation: 'This equation predicts final exam scores based on previous academic performance.'
+        },
+        {
+          step: 6,
+          title: 'Calculate R² (Model Accuracy)',
           formula: 'R² = 1 - (SSres / SStot)',
-          calculation: 'SSres = Σ(yᵢ - ŷᵢ)² = 562,500,000\nSStot = Σ(yᵢ - ȳ)² = 11,250,000,000\nR² = 1 - (562,500,000 / 11,250,000,000) = 0.95',
-          result: 'R² = 0.95',
-          explanation: 'Our model explains 95% of the variance in house prices, indicating an excellent fit.'
+          calculation: 'Predicted values: [91.1, 84.6, 95.7, 72.6, 88.3, 93.6, 77.2, 63.4]\nSSres = Σ(yᵢ - ŷᵢ)² = 45.2\nSStot = Σ(yᵢ - ȳ)² = 476.875\nR² = 1 - (45.2 / 476.875) = 0.905',
+          result: 'R² = 0.905 (90.5% accuracy)',
+          explanation: 'The model explains 90.5% of the variance in final exam scores, indicating excellent predictive power.'
         }
       ],
-      finalResult: 'The linear regression model achieved R² = 0.95, meaning it explains 95% of the price variation. The equation Price = -562,500 + 450 × Size shows that each square foot adds $450 to the house value.',
+      finalResult: 'The linear regression model achieved 90.5% accuracy in predicting final exam scores. Previous academic performance is the strongest predictor, with the equation: Final Score = 12.959 + 0.919 × Previous Score.',
       prediction: {
-        newCase: [2300],
-        result: 472500,
-        explanation: 'For a 2,300 sq ft house: Price = -562,500 + 450 × 2,300 = $472,500'
+        newCase: [80],
+        result: 86.48,
+        explanation: 'For a student with previous score of 80: Final Score = 12.959 + 0.919 × 80 = 86.48'
       }
     }
   },
@@ -176,19 +184,19 @@ export const algorithms: Algorithm[] = [
       }
     ],
     mathematicalExample: {
-      title: 'Loan Approval Decision Tree',
+      title: 'Credit Card Approval System',
       dataset: {
-        description: 'Predicting loan approval based on applicant characteristics',
-        features: ['Age', 'Income', 'Credit Score', 'Approved'],
+        description: 'Predicting credit card approval based on applicant financial profile',
+        features: ['Age', 'Income', 'Credit Score', 'Debt Ratio', 'Approved'],
         data: [
-          [25, 35000, 650, 0],
-          [35, 55000, 720, 1],
-          [45, 75000, 780, 1],
-          [28, 40000, 680, 0],
-          [52, 85000, 800, 1],
-          [30, 45000, 700, 1],
-          [38, 60000, 750, 1],
-          [26, 30000, 620, 0]
+          [25, 35000, 650, 0.4, 0],
+          [35, 55000, 720, 0.3, 1],
+          [45, 75000, 780, 0.2, 1],
+          [28, 40000, 680, 0.5, 0],
+          [52, 85000, 800, 0.1, 1],
+          [30, 45000, 700, 0.35, 1],
+          [38, 60000, 750, 0.25, 1],
+          [26, 30000, 620, 0.6, 0]
         ]
       },
       calculations: [
@@ -197,47 +205,55 @@ export const algorithms: Algorithm[] = [
           title: 'Calculate Initial Entropy',
           formula: 'Entropy(S) = -Σ(pᵢ × log₂(pᵢ))',
           calculation: 'Total samples: 8\nApproved: 5, Rejected: 3\np(approved) = 5/8 = 0.625, p(rejected) = 3/8 = 0.375\nEntropy = -(0.625×log₂(0.625)) - (0.375×log₂(0.375))\nEntropy = -(0.625×(-0.678)) - (0.375×(-1.415)) = 0.424 + 0.531',
-          result: '0.954',
-          explanation: 'High entropy indicates the dataset is mixed with both approved and rejected loans.'
+          result: 'Initial Entropy = 0.955',
+          explanation: 'High entropy indicates the dataset is mixed with both approved and rejected applications.'
         },
         {
           step: 2,
-          title: 'Test Split on Age ≤ 30',
+          title: 'Test Split on Credit Score ≤ 700',
           formula: 'Information Gain = Entropy(S) - Σ(|Sᵥ|/|S| × Entropy(Sᵥ))',
-          calculation: 'Left (Age ≤ 30): [25,28,30,26] → 1 approved, 3 rejected\nEntropy_left = -(1/4×log₂(1/4)) - (3/4×log₂(3/4)) = 0.811\nRight (Age > 30): [35,45,52,38] → 4 approved, 0 rejected\nEntropy_right = 0 (pure)\nWeighted entropy = (4/8×0.811) + (4/8×0) = 0.406\nGain = 0.954 - 0.406',
-          result: '0.548',
-          explanation: 'This split provides good separation between approved and rejected applications.'
+          calculation: 'Left (Credit ≤ 700): [650,680,700,620] → 1 approved, 3 rejected\nEntropy_left = -(1/4×log₂(1/4)) - (3/4×log₂(3/4)) = 0.811\nRight (Credit > 700): [720,780,800,750] → 4 approved, 0 rejected\nEntropy_right = 0 (pure)\nWeighted entropy = (4/8×0.811) + (4/8×0) = 0.406\nGain = 0.955 - 0.406',
+          result: 'Information Gain = 0.549',
+          explanation: 'Credit score provides excellent separation between approved and rejected applications.'
         },
         {
           step: 3,
           title: 'Test Split on Income ≤ 50000',
           formula: 'Information Gain = Entropy(S) - Σ(|Sᵥ|/|S| × Entropy(Sᵥ))',
-          calculation: 'Left (Income ≤ 50000): [35000,40000,45000,30000] → 1 approved, 3 rejected\nEntropy_left = 0.811\nRight (Income > 50000): [55000,75000,85000,60000] → 4 approved, 0 rejected\nEntropy_right = 0\nWeighted entropy = (4/8×0.811) + (4/8×0) = 0.406\nGain = 0.954 - 0.406',
-          result: '0.548',
-          explanation: 'Income split gives the same information gain as age, both are equally good.'
+          calculation: 'Left (Income ≤ 50000): [35000,40000,45000,30000] → 1 approved, 3 rejected\nEntropy_left = 0.811\nRight (Income > 50000): [55000,75000,85000,60000] → 4 approved, 0 rejected\nEntropy_right = 0\nWeighted entropy = (4/8×0.811) + (4/8×0) = 0.406\nGain = 0.955 - 0.406',
+          result: 'Information Gain = 0.549',
+          explanation: 'Income split gives the same information gain as credit score.'
         },
         {
           step: 4,
-          title: 'Choose Best Split (Age ≤ 30)',
+          title: 'Choose Best Split (Credit Score ≤ 700)',
           formula: 'Best Split = argmax(Information Gain)',
-          calculation: 'Age ≤ 30: Gain = 0.548\nIncome ≤ 50000: Gain = 0.548\nCredit ≤ 700: Gain = 0.311\nChoose Age ≤ 30 (first encountered with max gain)',
-          result: 'Root: Age ≤ 30?',
-          explanation: 'We choose age as our first split criterion.'
+          calculation: 'Credit Score ≤ 700: Gain = 0.549\nIncome ≤ 50000: Gain = 0.549\nAge ≤ 35: Gain = 0.311\nDebt Ratio ≤ 0.4: Gain = 0.423\nChoose Credit Score ≤ 700 (financial relevance)',
+          result: 'Root: Credit Score ≤ 700?',
+          explanation: 'Credit score is chosen as the primary split criterion for financial decision making.'
         },
         {
           step: 5,
-          title: 'Split Left Subtree (Age ≤ 30)',
-          formula: 'Further split on Credit Score ≤ 675',
-          calculation: 'Left subtree data: [25,650,0], [28,680,0], [30,700,1], [26,620,0]\nSplit on Credit ≤ 675:\nLeft: [25,650,0], [28,680,0], [26,620,0] → 0 approved, 3 rejected (pure)\nRight: [30,700,1] → 1 approved, 0 rejected (pure)\nGain = 0.811 - 0 = 0.811 (perfect split)',
-          result: 'Perfect separation achieved',
-          explanation: 'Young applicants with low credit scores are rejected, those with high scores are approved.'
+          title: 'Split Left Subtree (Credit ≤ 700)',
+          formula: 'Further split on Debt Ratio ≤ 0.4',
+          calculation: 'Left subtree: [25,35000,650,0.4,0], [28,40000,680,0.5,0], [30,45000,700,0.35,1], [26,30000,620,0.6,0]\nSplit on Debt Ratio ≤ 0.4:\nLeft: [25,35000,650,0.4,0], [30,45000,700,0.35,1] → 1 approved, 1 rejected\nRight: [28,40000,680,0.5,0], [26,30000,620,0.6,0] → 0 approved, 2 rejected\nGain = 0.811 - (2/4×1.0 + 2/4×0) = 0.311',
+          result: 'Secondary split on debt ratio',
+          explanation: 'Among low credit score applicants, debt ratio becomes the deciding factor.'
+        },
+        {
+          step: 6,
+          title: 'Final Decision Rules',
+          formula: 'IF-THEN rules from tree paths',
+          calculation: 'Rule 1: IF Credit Score > 700 THEN Approved\nRule 2: IF Credit Score ≤ 700 AND Debt Ratio ≤ 0.4 THEN Check individually\nRule 3: IF Credit Score ≤ 700 AND Debt Ratio > 0.4 THEN Rejected\nTree depth: 3 levels, Accuracy: 100% on training data',
+          result: 'Decision tree complete',
+          explanation: 'The tree creates clear, interpretable rules for credit approval decisions.'
         }
       ],
-      finalResult: 'The decision tree learned that applicants over 30 are always approved, while younger applicants need a credit score above 675 for approval. This tree achieves 100% accuracy on the training data.',
+      finalResult: 'The decision tree achieved 100% accuracy on training data with clear rules: High credit score (>700) leads to approval, while low credit score requires low debt ratio (<0.4) for consideration.',
       prediction: {
-        newCase: [32, 50000, 720],
+        newCase: [32, 50000, 720, 0.3],
         result: 'Approved',
-        explanation: 'Age = 32 > 30, so following the right branch → Approved'
+        explanation: 'Credit Score = 720 > 700, so following the right branch → Approved'
       }
     }
   },
@@ -296,68 +312,76 @@ export const algorithms: Algorithm[] = [
       }
     ],
     mathematicalExample: {
-      title: 'Customer Segmentation Example',
+      title: 'E-commerce Customer Segmentation',
       dataset: {
-        description: 'Segmenting customers based on annual spending and age',
-        features: ['Age', 'Annual Spending ($)'],
+        description: 'Segmenting customers based on purchase behavior and demographics',
+        features: ['Age', 'Annual Income', 'Purchase Frequency', 'Average Order Value'],
         data: [
-          [25, 15000],
-          [30, 18000],
-          [35, 22000],
-          [45, 45000],
-          [50, 50000],
-          [55, 48000],
-          [65, 25000],
-          [70, 20000]
+          [25, 35000, 12, 85],
+          [30, 40000, 15, 95],
+          [28, 38000, 10, 75],
+          [45, 75000, 8, 180],
+          [50, 80000, 6, 200],
+          [48, 78000, 7, 175],
+          [65, 45000, 20, 65],
+          [70, 50000, 25, 70]
         ]
       },
       calculations: [
         {
           step: 1,
-          title: 'Initialize 3 Centroids Randomly',
-          formula: 'C₁ = (x₁, y₁), C₂ = (x₂, y₂), C₃ = (x₃, y₃)',
-          calculation: 'C₁ = (30, 20000) - Young Low Spenders\nC₂ = (50, 40000) - Middle High Spenders\nC₃ = (60, 30000) - Senior Moderate Spenders',
+          title: 'Initialize 3 Centroids (K=3)',
+          formula: 'C₁ = (x₁, y₁, z₁, w₁), C₂ = (x₂, y₂, z₂, w₂), C₃ = (x₃, y₃, z₃, w₃)',
+          calculation: 'C₁ = (30, 40000, 12, 85) - Young Frequent Buyers\nC₂ = (50, 75000, 7, 180) - Middle-aged Premium Buyers\nC₃ = (65, 45000, 22, 65) - Senior Value Buyers',
           result: 'Initial centroids placed',
-          explanation: 'We start with 3 random centroids in the age-spending space.'
+          explanation: 'We start with 3 centroids representing different customer segments based on age and spending patterns.'
         },
         {
           step: 2,
           title: 'Calculate Distances (Iteration 1)',
-          formula: 'distance = √[(x₁-x₂)² + (y₁-y₂)²]',
-          calculation: 'Point (25, 15000):\nd₁ = √[(25-30)² + (15000-20000)²] = √[25 + 25000000] = 5000.0\nd₂ = √[(25-50)² + (15000-40000)²] = √[625 + 625000000] = 25000.6\nd₃ = √[(25-60)² + (15000-30000)²] = √[1225 + 225000000] = 15000.04',
+          formula: 'distance = √[(x₁-x₂)² + (y₁-y₂)² + (z₁-z₂)² + (w₁-w₂)²]',
+          calculation: 'Point [25, 35000, 12, 85]:\nd₁ = √[(25-30)² + (35000-40000)² + (12-12)² + (85-85)²] = √[25 + 25000000 + 0 + 0] = 5000.0\nd₂ = √[(25-50)² + (35000-75000)² + (12-7)² + (85-180)²] = √[625 + 1600000000 + 25 + 9025] = 40000.6\nd₃ = √[(25-65)² + (35000-45000)² + (12-22)² + (85-65)²] = √[1600 + 100000000 + 100 + 400] = 10000.2',
           result: 'Assign to Cluster 1 (closest)',
-          explanation: 'Each point is assigned to the nearest centroid based on Euclidean distance.'
+          explanation: 'Each customer is assigned to the nearest centroid based on Euclidean distance across all features.'
         },
         {
           step: 3,
-          title: 'Assign All Points to Clusters',
-          formula: 'cluster[i] = argmin(distance(point[i], centroid[j]))',
-          calculation: 'Cluster 1: [(25,15000), (30,18000), (35,22000)]\nCluster 2: [(45,45000), (50,50000), (55,48000)]\nCluster 3: [(65,25000), (70,20000)]',
-          result: '3 clusters formed',
-          explanation: 'Points are grouped based on proximity to centroids, forming natural customer segments.'
+          title: 'Assign All Customers to Clusters',
+          formula: 'cluster[i] = argmin(distance(customer[i], centroid[j]))',
+          calculation: 'Cluster 1 (Young Frequent): [25,35000,12,85], [30,40000,15,95], [28,38000,10,75]\nCluster 2 (Premium): [45,75000,8,180], [50,80000,6,200], [48,78000,7,175]\nCluster 3 (Senior Value): [65,45000,20,65], [70,50000,25,70]',
+          result: '3 customer segments formed',
+          explanation: 'Customers naturally group into young frequent buyers, premium buyers, and senior value-conscious buyers.'
         },
         {
           step: 4,
           title: 'Update Centroids (Iteration 1)',
-          formula: 'new_centroid = (mean(x_values), mean(y_values))',
-          calculation: 'C₁ = ((25+30+35)/3, (15000+18000+22000)/3) = (30, 18333)\nC₂ = ((45+50+55)/3, (45000+50000+48000)/3) = (50, 47667)\nC₃ = ((65+70)/2, (25000+20000)/2) = (67.5, 22500)',
+          formula: 'new_centroid = (mean(ages), mean(incomes), mean(frequencies), mean(order_values))',
+          calculation: 'C₁ = ((25+30+28)/3, (35000+40000+38000)/3, (12+15+10)/3, (85+95+75)/3) = (27.7, 37667, 12.3, 85)\nC₂ = ((45+50+48)/3, (75000+80000+78000)/3, (8+6+7)/3, (180+200+175)/3) = (47.7, 77667, 7, 185)\nC₃ = ((65+70)/2, (45000+50000)/2, (20+25)/2, (65+70)/2) = (67.5, 47500, 22.5, 67.5)',
           result: 'Centroids moved to cluster centers',
-          explanation: 'New centroids are calculated as the mean position of all points in each cluster.'
+          explanation: 'New centroids are calculated as the mean position of all customers in each cluster.'
         },
         {
           step: 5,
           title: 'Check Convergence',
           formula: 'convergence = Σ|new_centroid - old_centroid| < tolerance',
-          calculation: 'Centroid movement:\nC₁: √[(30-30)² + (18333-20000)²] = 1667\nC₂: √[(50-50)² + (47667-40000)²] = 7667\nC₃: √[(67.5-60)² + (22500-30000)²] = 7500.4\nTotal movement = 16834.4 > tolerance (100)',
+          calculation: 'Centroid movement:\nC₁: √[(27.7-30)² + (37667-40000)² + (12.3-12)² + (85-85)²] = 2333.3\nC₂: √[(47.7-50)² + (77667-75000)² + (7-7)² + (185-180)²] = 2667.3\nC₃: √[(67.5-65)² + (47500-45000)² + (22.5-22)² + (67.5-65)²] = 2500.3\nTotal movement = 7500.9 > tolerance (100)',
           result: 'Not converged, continue',
-          explanation: 'Centroids moved significantly, so we continue with another iteration.'
+          explanation: 'Centroids moved significantly, indicating the algorithm needs more iterations to converge.'
+        },
+        {
+          step: 6,
+          title: 'Final Cluster Characteristics',
+          formula: 'Cluster profiles after convergence',
+          calculation: 'Cluster 1 - Young Frequent Buyers:\nAvg Age: 27.7, Avg Income: $37,667, Avg Frequency: 12.3, Avg Order: $85\n\nCluster 2 - Premium Buyers:\nAvg Age: 47.7, Avg Income: $77,667, Avg Frequency: 7, Avg Order: $185\n\nCluster 3 - Senior Value Buyers:\nAvg Age: 67.5, Avg Income: $47,500, Avg Frequency: 22.5, Avg Order: $67.5',
+          result: 'Three distinct customer segments identified',
+          explanation: 'K-means successfully identified three customer segments with distinct purchasing behaviors and demographics.'
         }
       ],
-      finalResult: 'K-means successfully segmented customers into 3 groups: Young Spenders (avg age 30, spending $18K), High Spenders (avg age 50, spending $48K), and Senior Savers (avg age 68, spending $23K). This segmentation can help businesses tailor marketing strategies for each group.',
+      finalResult: 'K-means successfully segmented customers into 3 groups: Young Frequent Buyers (high frequency, low value), Premium Buyers (low frequency, high value), and Senior Value Buyers (very high frequency, low value). This segmentation enables targeted marketing strategies.',
       prediction: {
-        newCase: [40, 35000],
-        result: 'Cluster 2 (High Spenders)',
-        explanation: 'Customer aged 40 with $35K spending is closest to Cluster 2 centroid (50, 47667)'
+        newCase: [40, 60000, 10, 120],
+        result: 'Cluster 2 (Premium Buyers)',
+        explanation: 'Customer aged 40 with $60K income is closest to Premium Buyers centroid based on age and spending pattern'
       }
     }
   },
@@ -416,19 +440,19 @@ export const algorithms: Algorithm[] = [
       }
     ],
     mathematicalExample: {
-      title: 'Email Spam Classification',
+      title: 'Medical Diagnosis Classification',
       dataset: {
-        description: 'Classifying emails as spam (1) or not spam (-1) using word frequencies',
-        features: ['Word_Money', 'Word_Free', 'Class'],
+        description: 'Classifying patients as having disease (1) or healthy (-1) based on medical test results',
+        features: ['Blood Pressure', 'Cholesterol', 'Blood Sugar', 'BMI', 'Diagnosis'],
         data: [
-          [1, 1, -1],
-          [2, 2, -1],
-          [2, 0, -1],
-          [0, 0, -1],
-          [4, 4, 1],
-          [4, 0, 1],
-          [0, 4, 1],
-          [5, 5, 1]
+          [120, 180, 90, 22, -1],
+          [130, 200, 95, 25, -1],
+          [125, 190, 88, 23, -1],
+          [160, 280, 140, 32, 1],
+          [170, 300, 150, 35, 1],
+          [165, 290, 145, 33, 1],
+          [140, 220, 110, 28, 1],
+          [135, 210, 105, 26, -1]
         ]
       },
       calculations: [
@@ -436,48 +460,56 @@ export const algorithms: Algorithm[] = [
           step: 1,
           title: 'Scale Features',
           formula: 'X_scaled = (X - mean) / std',
-          calculation: 'Original data range: [0, 5]\nMean: [2.25, 2.0], Std: [1.83, 1.93]\nScaled features:\n[1,1] → [-0.68, -0.52]\n[2,2] → [-0.14, 0.00]\n[4,4] → [0.96, 1.04]\n[5,5] → [1.50, 1.56]',
+          calculation: 'Blood Pressure: mean=143.1, std=19.2\nCholesterol: mean=233.8, std=47.8\nBlood Sugar: mean=115.4, std=24.8\nBMI: mean=28.0, std=4.8\n\nScaled features for [120,180,90,22]:\n[(120-143.1)/19.2, (180-233.8)/47.8, (90-115.4)/24.8, (22-28.0)/4.8]\n= [-1.20, -1.13, -1.02, -1.25]',
           result: 'Features normalized',
-          explanation: 'Feature scaling ensures all dimensions contribute equally to the distance calculations.'
+          explanation: 'Feature scaling ensures all medical measurements contribute equally to the SVM decision boundary.'
         },
         {
           step: 2,
-          title: 'Choose Linear Kernel',
-          formula: 'K(x_i, x_j) = x_i · x_j (dot product)',
-          calculation: 'Linear kernel selected for this linearly separable problem\nRegularization parameter C = 1.0\nKernel matrix computed for all training pairs',
-          result: 'Linear SVM configured',
-          explanation: 'Linear kernel is appropriate when classes can be separated by a straight line/hyperplane.'
+          title: 'Choose RBF Kernel',
+          formula: 'K(x_i, x_j) = exp(-γ||x_i - x_j||²)',
+          calculation: 'RBF kernel selected for non-linear medical data\nγ = 1/(n_features × variance) = 1/(4 × 1) = 0.25\nRegularization parameter C = 1.0\nKernel matrix computed for all training pairs',
+          result: 'RBF SVM configured',
+          explanation: 'RBF kernel can capture complex non-linear relationships between medical parameters and disease diagnosis.'
         },
         {
           step: 3,
           title: 'Solve Optimization Problem',
-          formula: 'Minimize: ½||w||² + C∑ξᵢ subject to yᵢ(w·xᵢ + b) ≥ 1 - ξᵢ',
-          calculation: 'Dual formulation:\nMaximize: ∑αᵢ - ½∑∑αᵢαⱼyᵢyⱼ(xᵢ·xⱼ)\nSubject to: ∑αᵢyᵢ = 0, 0 ≤ αᵢ ≤ C\nSolved using SMO algorithm',
+          formula: 'Minimize: ½||w||² + C∑ξᵢ subject to yᵢ(w·φ(xᵢ) + b) ≥ 1 - ξᵢ',
+          calculation: 'Dual formulation with RBF kernel:\nMaximize: ∑αᵢ - ½∑∑αᵢαⱼyᵢyⱼK(xᵢ,xⱼ)\nSubject to: ∑αᵢyᵢ = 0, 0 ≤ αᵢ ≤ C\nSolved using Sequential Minimal Optimization (SMO)',
           result: 'Optimal α values found',
-          explanation: 'The optimization finds the hyperplane that maximizes the margin between classes.'
+          explanation: 'The optimization finds the hyperplane in feature space that best separates healthy from diseased patients.'
         },
         {
           step: 4,
           title: 'Identify Support Vectors',
           formula: 'Support vectors: points where αᵢ > 0',
-          calculation: 'Support vectors found:\nSV1: [2, 2, -1] with α₁ = 0.5\nSV2: [4, 0, +1] with α₂ = 0.3\nSV3: [0, 4, +1] with α₃ = 0.2\nThese points lie on the margin boundary',
+          calculation: 'Support vectors identified:\nSV1: [130,200,95,25,-1] with α₁ = 0.4 (healthy boundary)\nSV2: [140,220,110,28,+1] with α₂ = 0.6 (disease boundary)\nSV3: [135,210,105,26,-1] with α₃ = 0.2 (healthy boundary)\nThese patients define the decision boundary',
           result: '3 support vectors identified',
-          explanation: 'Support vectors are the critical points that define the decision boundary.'
+          explanation: 'Support vectors are the critical patients whose medical profiles define the diagnostic boundary.'
         },
         {
           step: 5,
-          title: 'Calculate Decision Boundary',
-          formula: 'w = ∑αᵢyᵢxᵢ, b = yₖ - w·xₖ for any support vector k',
-          calculation: 'w = 0.5×(-1)×[2,2] + 0.3×(+1)×[4,0] + 0.2×(+1)×[0,4]\nw = [-1,-1] + [1.2,0] + [0,0.8] = [0.2, -0.2]\nUsing SV1: b = -1 - [0.2,-0.2]·[2,2] = -1 - (0.4-0.4) = -1',
-          result: 'Decision boundary: 0.2x₁ - 0.2x₂ - 1 = 0',
-          explanation: 'The hyperplane equation separates spam from non-spam emails.'
+          title: 'Calculate Decision Function',
+          formula: 'f(x) = ∑αᵢyᵢK(xᵢ,x) + b',
+          calculation: 'Decision function components:\nα₁y₁ = 0.4 × (-1) = -0.4\nα₂y₂ = 0.6 × (+1) = +0.6\nα₃y₃ = 0.2 × (-1) = -0.2\n\nBias term b calculated using support vectors:\nb = y₁ - ∑αⱼyⱼK(xⱼ,x₁) = -0.15',
+          result: 'Decision function: f(x) = ∑αᵢyᵢK(xᵢ,x) - 0.15',
+          explanation: 'The decision function uses support vectors to classify new patients based on their medical profile similarity.'
+        },
+        {
+          step: 6,
+          title: 'Model Performance',
+          formula: 'Accuracy = (TP + TN) / (TP + TN + FP + FN)',
+          calculation: 'Training set predictions:\nHealthy patients: 4/4 correctly classified\nDiseased patients: 4/4 correctly classified\nAccuracy = 8/8 = 100%\n\nMargin width: 2/||w|| = 1.85 (good separation)\nSupport vector ratio: 3/8 = 37.5% (reasonable)',
+          result: '100% training accuracy',
+          explanation: 'The SVM achieved perfect classification on training data with good margin separation between classes.'
         }
       ],
-      finalResult: 'The SVM successfully learned a decision boundary that separates spam from non-spam emails with 100% accuracy on the training data. The model identified 3 support vectors that define the optimal hyperplane with maximum margin.',
+      finalResult: 'The SVM successfully learned a non-linear decision boundary that perfectly separates healthy from diseased patients using RBF kernel. The model identified 3 critical support vectors that define the diagnostic boundary.',
       prediction: {
-        newCase: [3, 1],
-        result: 'Not Spam (-1)',
-        explanation: 'f([3,1]) = sign(0.2×3 - 0.2×1 - 1) = sign(-0.6) = -1 (Not Spam)'
+        newCase: [150, 250, 120, 30],
+        result: 'Disease (+1)',
+        explanation: 'Patient with elevated BP (150), cholesterol (250), blood sugar (120), and BMI (30) classified as having disease'
       }
     }
   },
@@ -536,19 +568,19 @@ export const algorithms: Algorithm[] = [
       }
     ],
     mathematicalExample: {
-      title: 'Medical Diagnosis Classification',
+      title: 'Employee Performance Prediction',
       dataset: {
-        description: 'Diagnosing disease based on symptoms (1=present, 0=absent)',
-        features: ['Fever', 'Cough', 'Fatigue', 'Disease'],
+        description: 'Predicting employee performance rating based on work metrics',
+        features: ['Experience Years', 'Projects Completed', 'Training Hours', 'Team Size', 'Performance'],
         data: [
-          [1, 1, 1, 1],
-          [1, 1, 0, 1],
-          [1, 0, 1, 1],
-          [0, 1, 1, 0],
-          [0, 0, 1, 0],
-          [0, 0, 0, 0],
-          [1, 0, 0, 1],
-          [0, 1, 0, 0]
+          [2, 8, 40, 5, 'Good'],
+          [5, 15, 60, 8, 'Excellent'],
+          [1, 3, 20, 3, 'Average'],
+          [8, 25, 80, 12, 'Excellent'],
+          [3, 10, 45, 6, 'Good'],
+          [6, 18, 70, 10, 'Excellent'],
+          [1, 5, 25, 4, 'Average'],
+          [4, 12, 50, 7, 'Good']
         ]
       },
       calculations: [
@@ -556,48 +588,56 @@ export const algorithms: Algorithm[] = [
           step: 1,
           title: 'Create Bootstrap Sample 1',
           formula: 'Bootstrap sampling with replacement',
-          calculation: 'Sample 1 (indices): [0, 2, 4, 6, 1, 3, 7, 5]\nData: [[1,1,1,1], [1,0,1,1], [0,0,1,0], [1,0,0,1], [1,1,0,1], [0,1,1,0], [0,1,0,0], [0,0,0,0]]\nDisease count: 4 positive, 4 negative',
-          result: 'Balanced bootstrap sample',
-          explanation: 'First bootstrap sample created with replacement, maintaining class distribution.'
+          calculation: 'Sample 1 (indices): [0, 2, 4, 6, 1, 3, 7, 5]\nData: [[2,8,40,5,Good], [1,3,20,3,Average], [3,10,45,6,Good], [1,5,25,4,Average], [5,15,60,8,Excellent], [8,25,80,12,Excellent], [4,12,50,7,Good], [6,18,70,10,Excellent]]\nClass distribution: 3 Good, 2 Average, 3 Excellent',
+          result: 'Balanced bootstrap sample created',
+          explanation: 'First bootstrap sample created with replacement, maintaining diverse performance ratings.'
         },
         {
           step: 2,
           title: 'Build Tree 1 with Random Features',
-          formula: 'Random feature selection: √3 ≈ 2 features per split',
-          calculation: 'Available features: [Fever, Cough, Fatigue]\nSelected for root split: [Fever, Cough]\nBest split: Fever = 1\nLeft (Fever=0): 3 samples → 0 disease\nRight (Fever=1): 5 samples → 4 disease\nTree 1 rule: IF Fever=1 THEN Disease=1 ELSE Disease=0',
-          result: 'Tree 1 accuracy: 87.5%',
-          explanation: 'Tree 1 uses fever as primary indicator, achieving good but not perfect accuracy.'
+          formula: 'Random feature selection: √4 = 2 features per split',
+          calculation: 'Available features: [Experience, Projects, Training, Team Size]\nSelected for root split: [Experience, Projects]\nBest split: Experience ≥ 4\nLeft (Exp < 4): 4 samples → 2 Good, 2 Average\nRight (Exp ≥ 4): 4 samples → 1 Good, 3 Excellent\nTree 1 rule: IF Experience ≥ 4 THEN likely Excellent/Good ELSE Average/Good',
+          result: 'Tree 1 built with 85% accuracy',
+          explanation: 'Tree 1 uses experience as primary indicator, showing experienced employees perform better.'
         },
         {
           step: 3,
           title: 'Create Bootstrap Sample 2',
           formula: 'Different bootstrap sample',
-          calculation: 'Sample 2 (indices): [1, 3, 5, 7, 0, 2, 4, 6]\nData: [[1,1,0,1], [0,1,1,0], [0,0,0,0], [0,1,0,0], [1,1,1,1], [1,0,1,1], [0,0,1,0], [1,0,0,1]]\nDisease count: 4 positive, 4 negative',
+          calculation: 'Sample 2 (indices): [1, 3, 5, 7, 0, 2, 4, 6]\nData: [[5,15,60,8,Excellent], [8,25,80,12,Excellent], [6,18,70,10,Excellent], [4,12,50,7,Good], [2,8,40,5,Good], [1,3,20,3,Average], [3,10,45,6,Good], [1,5,25,4,Average]]\nClass distribution: 3 Good, 2 Average, 3 Excellent',
           result: 'Different sample distribution',
           explanation: 'Second bootstrap sample has different data points, leading to different tree structure.'
         },
         {
           step: 4,
           title: 'Build Tree 2 with Different Features',
-          formula: 'Random feature selection: [Cough, Fatigue]',
-          calculation: 'Selected features: [Cough, Fatigue]\nBest split: Cough = 1\nLeft (Cough=0): 4 samples → 2 disease\nRight (Cough=1): 4 samples → 2 disease\nFurther split on Fatigue needed\nTree 2 rule: IF Cough=1 AND Fatigue=1 THEN Disease=1',
-          result: 'Tree 2 accuracy: 75%',
-          explanation: 'Tree 2 uses different features and learns different patterns in the data.'
+          formula: 'Random feature selection: [Training Hours, Team Size]',
+          calculation: 'Selected features: [Training Hours, Team Size]\nBest split: Training Hours ≥ 50\nLeft (Training < 50): 4 samples → 2 Good, 2 Average\nRight (Training ≥ 50): 4 samples → 1 Good, 3 Excellent\nTree 2 rule: IF Training Hours ≥ 50 THEN likely Excellent ELSE Average/Good',
+          result: 'Tree 2 built with 80% accuracy',
+          explanation: 'Tree 2 focuses on training hours, showing well-trained employees perform better.'
         },
         {
           step: 5,
+          title: 'Build Tree 3 with Projects Focus',
+          formula: 'Random feature selection: [Projects, Team Size]',
+          calculation: 'Selected features: [Projects Completed, Team Size]\nBest split: Projects ≥ 12\nLeft (Projects < 12): 5 samples → 2 Good, 2 Average, 1 Excellent\nRight (Projects ≥ 12): 3 samples → 0 Good, 0 Average, 3 Excellent\nTree 3 rule: IF Projects ≥ 12 THEN Excellent ELSE Mixed',
+          result: 'Tree 3 built with 90% accuracy',
+          explanation: 'Tree 3 emphasizes project completion, showing high achievers get excellent ratings.'
+        },
+        {
+          step: 6,
           title: 'Combine Predictions (Voting)',
           formula: 'Majority voting across all trees',
-          calculation: 'Test case: [Fever=1, Cough=1, Fatigue=0]\nTree 1 prediction: Disease=1 (Fever=1)\nTree 2 prediction: Disease=0 (Cough=1 but Fatigue=0)\nTree 3 prediction: Disease=1 (majority pattern)\nVoting: 2 votes for Disease=1, 1 vote for Disease=0',
-          result: 'Final: Disease=1',
-          explanation: 'Random Forest combines individual tree predictions through majority voting.'
+          calculation: 'Test case: [Experience=7, Projects=20, Training=75, Team=9]\nTree 1 prediction: Excellent (Experience ≥ 4)\nTree 2 prediction: Excellent (Training ≥ 50)\nTree 3 prediction: Excellent (Projects ≥ 12)\nVoting: 3 votes for Excellent, 0 for Good, 0 for Average\n\nFeature Importance:\nExperience: 0.35, Projects: 0.30, Training: 0.25, Team Size: 0.10',
+          result: 'Final: Excellent',
+          explanation: 'Random Forest combines diverse decision trees through majority voting, providing robust predictions.'
         }
       ],
-      finalResult: 'The Random Forest with 100 trees achieves 92% accuracy by combining diverse decision trees. Each tree sees different data and features, making the ensemble more robust than any single tree. The model identifies fever and cough combination as the strongest disease indicator.',
+      finalResult: 'The Random Forest with 100 trees achieves 95% accuracy by combining diverse decision trees. Each tree focuses on different aspects (experience, training, projects), making the ensemble more robust and accurate than any single tree.',
       prediction: {
-        newCase: [1, 0, 1],
-        result: 'Disease=1',
-        explanation: 'Patient with fever and fatigue: 85% of trees predict disease presence'
+        newCase: [3, 14, 55, 8],
+        result: 'Good',
+        explanation: 'Employee with 3 years experience, 14 projects, 55 training hours: 70% of trees predict Good performance'
       }
     }
   },
@@ -656,68 +696,76 @@ export const algorithms: Algorithm[] = [
       }
     ],
     mathematicalExample: {
-      title: 'XOR Problem with Neural Network',
+      title: 'Stock Price Movement Prediction',
       dataset: {
-        description: 'Learning the XOR function (exclusive OR) which is not linearly separable',
-        features: ['Input1', 'Input2', 'XOR Output'],
+        description: 'Predicting if stock price will go up (1) or down (0) based on technical indicators',
+        features: ['RSI', 'MACD', 'Volume Ratio', 'Price Change %', 'Direction'],
         data: [
-          [0, 0, 0],
-          [0, 1, 1],
-          [1, 0, 1],
-          [1, 1, 0],
-          [0, 0, 0],
-          [0, 1, 1],
-          [1, 0, 1],
-          [1, 1, 0]
+          [30, -0.5, 1.2, -2.1, 0],
+          [70, 0.8, 1.8, 3.2, 1],
+          [45, 0.2, 1.1, 0.5, 1],
+          [25, -0.8, 0.9, -3.5, 0],
+          [65, 0.6, 1.5, 2.8, 1],
+          [35, -0.3, 1.0, -1.2, 0],
+          [75, 1.0, 2.0, 4.1, 1],
+          [20, -1.2, 0.8, -4.8, 0]
         ]
       },
       calculations: [
         {
           step: 1,
-          title: 'Network Architecture',
-          formula: 'Input Layer: 2 neurons, Hidden Layer: 2 neurons, Output Layer: 1 neuron',
-          calculation: 'Network: [2, 2, 1]\nActivation: Sigmoid function σ(x) = 1/(1 + e^(-x))\nTotal parameters: (2×2 + 2) + (2×1 + 1) = 9 parameters',
-          result: '2-2-1 architecture',
-          explanation: 'We need at least one hidden layer to solve the XOR problem since it\'s not linearly separable.'
+          title: 'Network Architecture Design',
+          formula: 'Input Layer: 4 neurons, Hidden Layer: 3 neurons, Output Layer: 1 neuron',
+          calculation: 'Network: [4, 3, 1]\nActivation: Sigmoid function σ(x) = 1/(1 + e^(-x))\nTotal parameters: (4×3 + 3) + (3×1 + 1) = 19 parameters\nInput features: RSI, MACD, Volume Ratio, Price Change %',
+          result: '4-3-1 architecture',
+          explanation: 'We design a network with 4 inputs for technical indicators, 3 hidden neurons for pattern recognition, and 1 output for direction prediction.'
         },
         {
           step: 2,
-          title: 'Initialize Weights',
-          formula: 'W₁ = [[w₁₁, w₁₂], [w₂₁, w₂₂]], W₂ = [[w₃₁], [w₃₂]]',
-          calculation: 'W₁ = [[0.5, -0.3], [0.2, 0.8]], b₁ = [0.1, -0.2]\nW₂ = [[0.9], [-0.7]], b₂ = [0.3]\nTotal 9 parameters initialized randomly',
+          title: 'Initialize Weights and Biases',
+          formula: 'W₁ = 4×3 matrix, W₂ = 3×1 matrix, b₁ = 3×1, b₂ = 1×1',
+          calculation: 'W₁ = [[0.5, -0.3, 0.8], [0.2, 0.7, -0.4], [-0.6, 0.4, 0.9], [0.3, -0.5, 0.6]]\nb₁ = [0.1, -0.2, 0.3]\nW₂ = [[0.8], [-0.6], [0.7]]\nb₂ = [0.2]\nTotal 19 parameters initialized using Xavier initialization',
           result: 'Random initialization complete',
-          explanation: 'Weights are initialized randomly to break symmetry and allow the network to learn.'
+          explanation: 'Weights are initialized randomly to break symmetry and allow the network to learn different patterns.'
         },
         {
           step: 3,
-          title: 'Forward Pass for Input [1, 0]',
+          title: 'Forward Pass for Input [70, 0.8, 1.8, 3.2]',
           formula: 'z = W·a + b, a = σ(z)',
-          calculation: 'Hidden layer:\nz₁ = [0.5×1 + (-0.3)×0] + 0.1 = 0.6, a₁ = σ(0.6) = 0.646\nz₂ = [0.2×1 + 0.8×0] + (-0.2) = 0.0, a₂ = σ(0.0) = 0.5\n\nOutput layer:\nz₃ = [0.9×0.646 + (-0.7)×0.5] + 0.3 = 0.581 + 0.3 = 0.881\noutput = σ(0.881) = 0.707',
-          result: 'Predicted: 0.707, Target: 1',
-          explanation: 'The network\'s initial prediction is 0.707, but the target for XOR(1,0) is 1.'
+          calculation: 'Hidden layer calculations:\nz₁ = [0.5×70 + 0.2×0.8 + (-0.6)×1.8 + 0.3×3.2] + 0.1 = 35.0 + 0.16 - 1.08 + 0.96 + 0.1 = 35.14\na₁ = σ(35.14) ≈ 1.0\n\nz₂ = [-0.3×70 + 0.7×0.8 + 0.4×1.8 + (-0.5)×3.2] + (-0.2) = -21 + 0.56 + 0.72 - 1.6 - 0.2 = -21.52\na₂ = σ(-21.52) ≈ 0.0\n\nz₃ = [0.8×70 + (-0.4)×0.8 + 0.9×1.8 + 0.6×3.2] + 0.3 = 56 - 0.32 + 1.62 + 1.92 + 0.3 = 59.52\na₃ = σ(59.52) ≈ 1.0',
+          result: 'Hidden layer: [1.0, 0.0, 1.0]',
+          explanation: 'The hidden layer processes the technical indicators and creates internal representations of market patterns.'
         },
         {
           step: 4,
-          title: 'Calculate Loss',
-          formula: 'Loss = ½(target - prediction)²',
-          calculation: 'Loss = ½(1 - 0.707)² = ½(0.293)² = ½(0.086) = 0.043\nThis represents the error for this single training example',
-          result: 'Loss = 0.043',
-          explanation: 'Mean squared error measures how far our prediction is from the target.'
+          title: 'Output Layer Calculation',
+          formula: 'z_output = W₂·a_hidden + b₂, output = σ(z_output)',
+          calculation: 'Output calculation:\nz_output = [0.8×1.0 + (-0.6)×0.0 + 0.7×1.0] + 0.2 = 0.8 + 0 + 0.7 + 0.2 = 1.7\noutput = σ(1.7) = 1/(1 + e^(-1.7)) = 0.845\n\nTarget: 1 (price goes up)\nPrediction: 0.845 (strong upward signal)',
+          result: 'Predicted: 0.845, Target: 1',
+          explanation: 'The network predicts a strong probability (84.5%) that the stock price will go up, which matches the actual direction.'
         },
         {
           step: 5,
-          title: 'Backpropagation',
-          formula: 'δ = (target - output) × σ\'(z), ∇W = δ × a^(l-1)',
-          calculation: 'Output layer error:\nδ₃ = (1 - 0.707) × 0.707 × (1 - 0.707) = 0.293 × 0.207 = 0.061\n\nHidden layer errors:\nδ₁ = δ₃ × w₃₁ × σ\'(z₁) = 0.061 × 0.9 × 0.229 = 0.013\nδ₂ = δ₃ × w₃₂ × σ\'(z₂) = 0.061 × (-0.7) × 0.25 = -0.011',
+          title: 'Calculate Loss and Backpropagation',
+          formula: 'Loss = ½(target - prediction)², δ = (target - output) × σ\'(z)',
+          calculation: 'Loss calculation:\nLoss = ½(1 - 0.845)² = ½(0.155)² = 0.012\n\nBackpropagation:\nδ_output = (1 - 0.845) × 0.845 × (1 - 0.845) = 0.155 × 0.131 = 0.020\n\nHidden layer errors:\nδ₁ = δ_output × W₂[0] × a₁ × (1 - a₁) = 0.020 × 0.8 × 1.0 × 0.0 ≈ 0.0\nδ₂ = δ_output × W₂[1] × a₂ × (1 - a₂) = 0.020 × (-0.6) × 0.0 × 1.0 = 0.0\nδ₃ = δ_output × W₂[2] × a₃ × (1 - a₃) = 0.020 × 0.7 × 1.0 × 0.0 ≈ 0.0',
           result: 'Gradients calculated',
-          explanation: 'Backpropagation calculates how much each weight contributed to the error.'
+          explanation: 'Backpropagation calculates how much each weight contributed to the prediction error for stock direction.'
+        },
+        {
+          step: 6,
+          title: 'Weight Updates and Training Progress',
+          formula: 'W_new = W_old - learning_rate × gradient',
+          calculation: 'Weight updates (learning_rate = 0.1):\nW₂ updates: ΔW₂ = 0.1 × δ_output × hidden_activations\nW₁ updates: ΔW₁ = 0.1 × δ_hidden × input_features\n\nAfter 1000 epochs:\nTraining accuracy: 95%\nValidation accuracy: 87%\nAverage loss: 0.08\nConvergence achieved',
+          result: 'Network trained successfully',
+          explanation: 'After training on historical stock data, the neural network learns to recognize patterns in technical indicators that predict price movements.'
         }
       ],
-      finalResult: 'After 10,000 training iterations, the neural network successfully learns the XOR function with 99.9% accuracy. The hidden layer learns to create a non-linear decision boundary that separates the XOR classes, demonstrating the power of neural networks to solve non-linearly separable problems.',
+      finalResult: 'After 1000 training epochs, the neural network achieved 87% accuracy in predicting stock price direction. The network learned to recognize complex patterns in technical indicators (RSI, MACD, volume, price change) that correlate with future price movements.',
       prediction: {
-        newCase: [1, 1],
-        result: 0.02,
-        explanation: 'XOR(1,1) = 0: Network outputs 0.02 ≈ 0 (correct)'
+        newCase: [60, 0.4, 1.3, 1.8],
+        result: 0.72,
+        explanation: 'Stock with RSI=60, MACD=0.4, Volume=1.3, Change=1.8%: Network predicts 72% probability of price increase'
       }
     }
   }
