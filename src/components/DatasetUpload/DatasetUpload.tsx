@@ -4,8 +4,7 @@ import { Dataset, DatasetRecommendation, DatasetAnalysis } from '../../types';
 import { useDatasetHistory } from '../../hooks/useDatasetHistory';
 import { useAuth } from '../../hooks/useAuth';
 import { AnimatedBackground } from '../Dashboard/AnimatedBackground';
-import { PowerBIDashboard } from '../PowerBI/PowerBIDashboard';
-import { DashboardSelector } from '../PowerBI/DashboardSelector';
+import { UnifiedDashboard } from '../PowerBI/UnifiedDashboard';
 
 interface DatasetUploadProps {
   onBack: () => void;
@@ -36,7 +35,6 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({ onBack }) => {
   const [dragActive, setDragActive] = useState(false);
   const [showCleanedData, setShowCleanedData] = useState(false);
   const [showDashboards, setShowDashboards] = useState(false);
-  const [selectedDashboard, setSelectedDashboard] = useState('overview');
 
   const parseCSVData = (csvText: string): { headers: string[], data: any[][], dataTypes: string[] } => {
     const lines = csvText.trim().split('\n');
@@ -179,6 +177,7 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({ onBack }) => {
         setCleanedDataset(cleaned);
         setRecommendations(mockRecommendations);
         setIsAnalyzing(false);
+        setShowDashboards(true); // Auto-show dashboards after analysis
 
         // Add to history
         const analysis: DatasetAnalysis = {
@@ -342,44 +341,39 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({ onBack }) => {
             <span>Back to Dashboard</span>
           </button>
           
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white animate-fade-in">Dataset Analysis & PowerBI Dashboards</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white animate-fade-in">Dataset Analysis & Comprehensive Dashboards</h1>
         </div>
 
-        {/* PowerBI Dashboards Section */}
+        {/* Unified PowerBI Dashboard Section */}
         {dataset && cleanedDataset && !isAnalyzing && (
           <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
-                  <BarChart3 className="w-6 h-6 text-purple-600 dark:text-purple-400 animate-pulse" />
+                <div className="p-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl">
+                  <BarChart3 className="w-8 h-8 text-white animate-pulse" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Interactive PowerBI Dashboards</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Comprehensive Data Analytics Dashboard</h2>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Explore your data with multiple interactive dashboard views
+                    All dataset visualizations, insights, and analytics in one unified view
                   </p>
                 </div>
               </div>
               
               <button
                 onClick={() => setShowDashboards(!showDashboards)}
-                className="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all duration-300 transform hover:scale-105"
+                className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
               >
-                <Eye className="w-4 h-4" />
-                <span>{showDashboards ? 'Hide Dashboards' : 'View Dashboards'}</span>
+                <Eye className="w-5 h-5" />
+                <span>{showDashboards ? 'Hide Dashboard' : 'View Dashboard'}</span>
               </button>
             </div>
 
             {showDashboards && (
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8 animate-fade-in">
-                <DashboardSelector 
-                  selectedDashboard={selectedDashboard}
-                  onDashboardChange={setSelectedDashboard}
-                />
-                
-                <PowerBIDashboard
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 mb-8 animate-fade-in border border-gray-200 dark:border-gray-700">
+                <UnifiedDashboard
                   dataset={dataset}
-                  dashboardType={selectedDashboard as any}
+                  cleanedDataset={cleanedDataset}
                   isActive={true}
                 />
               </div>
@@ -580,7 +574,7 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({ onBack }) => {
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center transition-colors animate-fade-in">
                 <Brain className="w-12 h-12 text-blue-600 dark:text-blue-400 mx-auto mb-4 animate-pulse" />
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Analyzing Dataset...</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-4">Our AI is examining your data and performing cleaning operations to provide the best algorithm recommendations and generate PowerBI dashboards.</p>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">Our AI is examining your data and performing cleaning operations to provide the best algorithm recommendations and generate comprehensive dashboards.</p>
                 <div className="space-y-2">
                   <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                     <div className="bg-blue-600 dark:bg-blue-400 h-2 rounded-full animate-pulse" style={{ width: '66%' }}></div>
@@ -627,7 +621,7 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({ onBack }) => {
                   <p className="text-sm text-blue-700 dark:text-blue-300">
                     <strong>Pro Tip:</strong> These recommendations are based on your cleaned dataset characteristics. 
                     The data cleaning process preserved original column values while removing {cleanedDataset?.removedRows || 0} problematic rows, 
-                    which should lead to better model performance. Use the PowerBI dashboards above to explore your data interactively.
+                    which should lead to better model performance. Use the comprehensive dashboard above to explore your data interactively.
                   </p>
                 </div>
               </div>
@@ -640,7 +634,7 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({ onBack }) => {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Ready to Analyze</h3>
                 <p className="text-gray-600 dark:text-gray-400">
-                  Upload your dataset to get personalized algorithm recommendations, automatic data cleaning with preserved original values, and interactive PowerBI-style dashboards.
+                  Upload your dataset to get personalized algorithm recommendations, automatic data cleaning with preserved original values, and comprehensive interactive dashboards with all visualizations in one place.
                 </p>
               </div>
             )}
