@@ -265,10 +265,10 @@ export const PowerBIExport: React.FC<PowerBIExportProps> = ({
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Dashboard Preview</h3>
             <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 text-center">
               <div className="text-gray-600 dark:text-gray-400 mb-2">
-                {dashboardType.charAt(0).toUpperCase() + dashboardType.slice(1)} Dashboard
+                {dashboardData?.title || `${dashboardType.charAt(0).toUpperCase() + dashboardType.slice(1)} Dashboard`}
               </div>
               <div className="text-sm text-gray-500 dark:text-gray-500">
-                {dashboardData?.widgets?.length || 0} widgets • Interactive charts and metrics
+                {dashboardData?.sections?.reduce((total: number, section: any) => total + section.widgets.length, 0) || 0} widgets • Interactive charts and metrics
               </div>
             </div>
           </div>

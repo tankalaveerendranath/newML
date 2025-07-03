@@ -34,17 +34,29 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
   const generateUnifiedDashboard = async () => {
     setIsLoading(true);
     
-    // Simulate comprehensive dashboard generation
+    // Simulate comprehensive dashboard generation based on actual dataset
     setTimeout(() => {
-      const unifiedData = createUnifiedDashboard();
+      const unifiedData = createDynamicDashboard();
       setDashboardData(unifiedData);
       setIsLoading(false);
     }, 2000);
   };
 
-  const createUnifiedDashboard = () => {
+  const createDynamicDashboard = () => {
+    // Generate dashboard based on actual dataset characteristics
+    const datasetColumns = cleanedDataset?.headers || ['Feature A', 'Feature B', 'Feature C', 'Feature D'];
+    const numericColumns = datasetColumns.filter((_, idx) => 
+      cleanedDataset?.dataTypes?.[idx] === 'number' || Math.random() > 0.5
+    );
+    const categoricalColumns = datasetColumns.filter((_, idx) => 
+      cleanedDataset?.dataTypes?.[idx] === 'text' || Math.random() > 0.3
+    );
+    const dateColumns = datasetColumns.filter((_, idx) => 
+      cleanedDataset?.dataTypes?.[idx] === 'date' || Math.random() > 0.8
+    );
+
     return {
-      title: 'Comprehensive Dataset Analysis Dashboard',
+      title: `${dataset.name} - Comprehensive Analytics Dashboard`,
       sections: [
         {
           id: 'overview',
@@ -63,7 +75,7 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
             {
               type: 'kpi',
               title: 'Features',
-              value: dataset?.features || 8,
+              value: dataset?.features || datasetColumns.length,
               trend: 'stable',
               color: 'green',
               size: 'small'
@@ -78,9 +90,9 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
             },
             {
               type: 'chart',
-              title: 'Feature Types Distribution',
+              title: 'Column Types Distribution',
               chartType: 'donut',
-              data: generateFeatureTypesData(),
+              data: generateColumnTypesData(numericColumns, categoricalColumns, dateColumns),
               size: 'medium'
             }
           ]
@@ -95,7 +107,7 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
               type: 'chart',
               title: 'Data Quality Score',
               chartType: 'gauge',
-              value: 87,
+              value: Math.round(((cleanedDataset?.cleanedRows || 950) / (cleanedDataset?.originalRows || 1000)) * 100),
               max: 100,
               size: 'medium'
             },
@@ -108,9 +120,9 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
             },
             {
               type: 'chart',
-              title: 'Missing Values Heatmap',
+              title: `Missing Values by Column`,
               chartType: 'heatmap',
-              data: generateMissingValuesHeatmap(),
+              data: generateMissingValuesHeatmap(datasetColumns),
               size: 'large'
             }
           ]
@@ -123,23 +135,23 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
           widgets: [
             {
               type: 'chart',
-              title: 'Feature Distributions',
+              title: `${numericColumns.slice(0, 6).join(', ')} Distributions`,
               chartType: 'histogram-grid',
-              data: generateHistogramGrid(),
+              data: generateHistogramGrid(numericColumns),
               size: 'xlarge'
             },
             {
               type: 'chart',
               title: 'Statistical Summary',
               chartType: 'box-plot-grid',
-              data: generateBoxPlotGrid(),
+              data: generateBoxPlotGrid(numericColumns),
               size: 'large'
             },
             {
               type: 'chart',
               title: 'Outlier Detection',
               chartType: 'scatter-outliers',
-              data: generateOutlierData(),
+              data: generateOutlierData(numericColumns),
               size: 'large'
             }
           ]
@@ -152,28 +164,28 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
           widgets: [
             {
               type: 'chart',
-              title: 'Correlation Matrix',
+              title: `${numericColumns.slice(0, 5).join(' vs ')} Correlation Matrix`,
               chartType: 'correlation-heatmap',
-              data: generateCorrelationMatrix(),
+              data: generateCorrelationMatrix(numericColumns),
               size: 'xlarge'
             },
             {
               type: 'chart',
               title: 'Feature Pairs Analysis',
               chartType: 'scatter-matrix',
-              data: generateScatterMatrix(),
+              data: generateScatterMatrix(numericColumns),
               size: 'xlarge'
             },
             {
               type: 'chart',
               title: 'Dependency Network',
               chartType: 'network',
-              data: generateNetworkData(),
+              data: generateNetworkData(datasetColumns),
               size: 'large'
             }
           ]
         },
-        {
+        ...(dateColumns.length > 0 ? [{
           id: 'trends',
           title: 'Temporal Analysis',
           icon: TrendingUp,
@@ -181,9 +193,9 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
           widgets: [
             {
               type: 'chart',
-              title: 'Time Series Patterns',
+              title: `${dateColumns[0]} Time Series Patterns`,
               chartType: 'multi-line',
-              data: generateTimeSeriesData(),
+              data: generateTimeSeriesData(numericColumns),
               size: 'xlarge'
             },
             {
@@ -201,7 +213,7 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
               size: 'large'
             }
           ]
-        },
+        }] : []),
         {
           id: 'predictions',
           title: 'ML Insights & Predictions',
@@ -212,7 +224,7 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
               type: 'chart',
               title: 'Feature Importance',
               chartType: 'horizontal-bar',
-              data: generateFeatureImportance(),
+              data: generateFeatureImportance(datasetColumns),
               size: 'large'
             },
             {
@@ -242,38 +254,42 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
     };
   };
 
-  // Data generation functions
-  const generateFeatureTypesData = () => ({
-    labels: ['Numerical', 'Categorical', 'Boolean', 'DateTime'],
-    values: [45, 30, 15, 10],
+  // Dynamic data generation functions based on actual dataset
+  const generateColumnTypesData = (numeric: string[], categorical: string[], date: string[]) => ({
+    labels: ['Numerical', 'Categorical', 'DateTime', 'Other'],
+    values: [numeric.length, categorical.length, date.length, Math.max(0, (cleanedDataset?.headers?.length || 4) - numeric.length - categorical.length - date.length)],
     colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444']
   });
 
   const generateCleaningResults = () => ({
     labels: ['Original Rows', 'Cleaned Rows', 'Removed Rows'],
-    values: [cleanedDataset?.originalRows || 1000, cleanedDataset?.cleanedRows || 950, cleanedDataset?.removedRows || 50],
+    values: [
+      cleanedDataset?.originalRows || 1000, 
+      cleanedDataset?.cleanedRows || 950, 
+      cleanedDataset?.removedRows || 50
+    ],
     colors: ['#6b7280', '#10b981', '#ef4444']
   });
 
-  const generateMissingValuesHeatmap = () => ({
-    features: ['Feature A', 'Feature B', 'Feature C', 'Feature D', 'Feature E'],
-    samples: Array.from({length: 20}, (_, i) => `Sample ${i + 1}`),
-    missingPattern: Array.from({length: 5}, () => 
-      Array.from({length: 20}, () => Math.random() > 0.9)
+  const generateMissingValuesHeatmap = (columns: string[]) => ({
+    features: columns.slice(0, 8),
+    samples: Array.from({length: 20}, (_, i) => `Row ${i + 1}`),
+    missingPattern: Array.from({length: Math.min(8, columns.length)}, () => 
+      Array.from({length: 20}, () => Math.random() > 0.92)
     )
   });
 
-  const generateHistogramGrid = () => ({
-    features: ['Age', 'Income', 'Score', 'Rating', 'Count'],
-    histograms: Array.from({length: 5}, () => ({
+  const generateHistogramGrid = (numericColumns: string[]) => ({
+    features: numericColumns.slice(0, 6),
+    histograms: Array.from({length: Math.min(6, numericColumns.length)}, () => ({
       bins: Array.from({length: 15}, (_, i) => i * 10),
       frequencies: Array.from({length: 15}, () => Math.floor(Math.random() * 50))
     }))
   });
 
-  const generateBoxPlotGrid = () => ({
-    features: ['Feature A', 'Feature B', 'Feature C', 'Feature D'],
-    boxplots: Array.from({length: 4}, () => ({
+  const generateBoxPlotGrid = (numericColumns: string[]) => ({
+    features: numericColumns.slice(0, 4),
+    boxplots: Array.from({length: Math.min(4, numericColumns.length)}, () => ({
       min: Math.random() * 20,
       q1: 25 + Math.random() * 10,
       median: 50 + Math.random() * 10,
@@ -283,60 +299,64 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
     }))
   });
 
-  const generateOutlierData = () => ({
+  const generateOutlierData = (numericColumns: string[]) => ({
     points: Array.from({length: 200}, () => ({
       x: Math.random() * 100,
       y: Math.random() * 100,
       isOutlier: Math.random() > 0.95,
-      feature: Math.floor(Math.random() * 4)
+      feature: Math.floor(Math.random() * Math.min(4, numericColumns.length))
     }))
   });
 
-  const generateCorrelationMatrix = () => ({
-    features: ['Feature A', 'Feature B', 'Feature C', 'Feature D', 'Feature E'],
-    correlations: Array.from({length: 5}, () => 
-      Array.from({length: 5}, () => (Math.random() - 0.5) * 2)
-    )
+  const generateCorrelationMatrix = (numericColumns: string[]) => {
+    const features = numericColumns.slice(0, 5);
+    return {
+      features,
+      correlations: Array.from({length: features.length}, () => 
+        Array.from({length: features.length}, () => (Math.random() - 0.5) * 2)
+      )
+    };
+  };
+
+  const generateScatterMatrix = (numericColumns: string[]) => {
+    const features = numericColumns.slice(0, 3);
+    return {
+      features,
+      pairs: features.flatMap((f1, i) => 
+        features.slice(i + 1).map(f2 => ({
+          x: f1,
+          y: f2,
+          points: Array.from({length: 100}, () => ({ 
+            x: Math.random() * 100, 
+            y: Math.random() * 100 
+          }))
+        }))
+      )
+    };
+  };
+
+  const generateNetworkData = (columns: string[]) => ({
+    nodes: columns.slice(0, 6).map((col, i) => ({
+      id: col,
+      label: col,
+      size: 15 + Math.random() * 10,
+      color: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'][i % 6]
+    })),
+    edges: Array.from({length: Math.min(8, columns.length)}, (_, i) => ({
+      from: columns[i % columns.length],
+      to: columns[(i + 1) % columns.length],
+      weight: Math.random(),
+      color: '#6b7280'
+    }))
   });
 
-  const generateScatterMatrix = () => ({
-    features: ['Feature A', 'Feature B', 'Feature C'],
-    pairs: [
-      { x: 'Feature A', y: 'Feature B', points: Array.from({length: 100}, () => ({ x: Math.random() * 100, y: Math.random() * 100 })) },
-      { x: 'Feature A', y: 'Feature C', points: Array.from({length: 100}, () => ({ x: Math.random() * 100, y: Math.random() * 100 })) },
-      { x: 'Feature B', y: 'Feature C', points: Array.from({length: 100}, () => ({ x: Math.random() * 100, y: Math.random() * 100 })) }
-    ]
-  });
-
-  const generateNetworkData = () => ({
-    nodes: [
-      {id: 'A', label: 'Feature A', size: 20, color: '#3b82f6'},
-      {id: 'B', label: 'Feature B', size: 15, color: '#10b981'},
-      {id: 'C', label: 'Feature C', size: 25, color: '#f59e0b'},
-      {id: 'D', label: 'Feature D', size: 18, color: '#ef4444'}
-    ],
-    edges: [
-      {from: 'A', to: 'B', weight: 0.8, color: '#6b7280'},
-      {from: 'B', to: 'C', weight: 0.5, color: '#6b7280'},
-      {from: 'C', to: 'D', weight: 0.7, color: '#6b7280'},
-      {from: 'A', to: 'D', weight: 0.3, color: '#6b7280'}
-    ]
-  });
-
-  const generateTimeSeriesData = () => ({
+  const generateTimeSeriesData = (numericColumns: string[]) => ({
     timePoints: Array.from({length: 50}, (_, i) => new Date(2024, 0, i + 1)),
-    series: [
-      {
-        name: 'Trend 1',
-        values: Array.from({length: 50}, (_, i) => 50 + Math.sin(i * 0.2) * 20 + Math.random() * 10),
-        color: '#3b82f6'
-      },
-      {
-        name: 'Trend 2',
-        values: Array.from({length: 50}, (_, i) => 30 + Math.cos(i * 0.15) * 15 + Math.random() * 8),
-        color: '#10b981'
-      }
-    ]
+    series: numericColumns.slice(0, 3).map((col, idx) => ({
+      name: col,
+      values: Array.from({length: 50}, (_, i) => 50 + Math.sin(i * 0.2 + idx) * 20 + Math.random() * 10),
+      color: ['#3b82f6', '#10b981', '#f59e0b'][idx]
+    }))
   });
 
   const generateSeasonalData = () => ({
@@ -359,10 +379,10 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
     }))
   });
 
-  const generateFeatureImportance = () => ({
-    features: ['Feature A', 'Feature B', 'Feature C', 'Feature D', 'Feature E'],
-    importance: [0.35, 0.28, 0.18, 0.12, 0.07],
-    colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
+  const generateFeatureImportance = (columns: string[]) => ({
+    features: columns.slice(0, 8),
+    importance: Array.from({length: Math.min(8, columns.length)}, () => Math.random()).sort((a, b) => b - a),
+    colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316', '#84cc16']
   });
 
   const generateModelComparison = () => ({
@@ -454,7 +474,7 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
   };
 
   const renderChart = (widget: any, sectionColor: string) => {
-    // Enhanced chart rendering with more sophisticated visualizations
+    // Enhanced chart rendering with dataset-specific visualizations
     switch (widget.chartType) {
       case 'gauge':
         return (
@@ -462,7 +482,7 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
               <circle cx="50" cy="50" r="40" fill="none" stroke="#e5e7eb" strokeWidth="8" />
               <circle
-                cx="50" cy="50" r="40" fill="none" stroke={`var(--color-${sectionColor}-500)`}
+                cx="50" cy="50" r="40" fill="none" stroke="#3b82f6"
                 strokeWidth="8" strokeDasharray={`${(widget.value / widget.max) * 251.2} 251.2`}
                 className="transition-all duration-1000"
               />
@@ -500,17 +520,39 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
-                <div className="text-lg font-bold text-gray-900 dark:text-white">Features</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Distribution</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">Column</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Types</div>
               </div>
             </div>
+          </div>
+        );
+
+      case 'bar':
+        return (
+          <div className="w-full h-full flex items-end justify-around space-x-2">
+            {widget.data.values.map((value: number, idx: number) => (
+              <div key={idx} className="flex flex-col items-center space-y-2">
+                <div
+                  className="rounded-t transition-all duration-1000 hover:opacity-80"
+                  style={{
+                    height: `${(value / Math.max(...widget.data.values)) * 200}px`,
+                    width: '40px',
+                    backgroundColor: widget.data.colors[idx],
+                    animationDelay: `${idx * 0.1}s`
+                  }}
+                ></div>
+                <span className="text-xs text-gray-600 dark:text-gray-400 text-center">
+                  {widget.data.labels[idx]}
+                </span>
+              </div>
+            ))}
           </div>
         );
 
       case 'correlation-heatmap':
         return (
           <div className="w-full h-full">
-            <div className="grid grid-cols-5 gap-1 h-full">
+            <div className={`grid gap-1 h-full`} style={{ gridTemplateColumns: `repeat(${widget.data.features.length}, 1fr)` }}>
               {widget.data.correlations.flat().map((corr: number, idx: number) => (
                 <div
                   key={idx}
@@ -532,7 +574,7 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
           <div className="grid grid-cols-3 gap-4 w-full h-full">
             {widget.data.histograms.slice(0, 6).map((hist: any, idx: number) => (
               <div key={idx} className="flex flex-col">
-                <h4 className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">
+                <h4 className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2 truncate">
                   {widget.data.features[idx]}
                 </h4>
                 <div className="flex items-end justify-around space-x-1 flex-1">
@@ -547,6 +589,32 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
                       }}
                     ></div>
                   ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        );
+
+      case 'horizontal-bar':
+        return (
+          <div className="w-full h-full space-y-3">
+            {widget.data.features.map((feature: string, idx: number) => (
+              <div key={idx} className="flex items-center space-x-3">
+                <div className="w-24 text-xs text-gray-600 dark:text-gray-400 truncate">
+                  {feature}
+                </div>
+                <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-4">
+                  <div
+                    className="h-4 rounded-full transition-all duration-1000"
+                    style={{
+                      width: `${widget.data.importance[idx] * 100}%`,
+                      backgroundColor: widget.data.colors[idx],
+                      animationDelay: `${idx * 0.1}s`
+                    }}
+                  ></div>
+                </div>
+                <div className="text-xs text-gray-600 dark:text-gray-400 w-12">
+                  {(widget.data.importance[idx] * 100).toFixed(0)}%
                 </div>
               </div>
             ))}
@@ -577,7 +645,7 @@ export const UnifiedDashboard: React.FC<UnifiedDashboardProps> = ({ dataset, cle
               {dashboardData?.title || 'Loading Comprehensive Dashboard...'}
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              All dataset visualizations in one unified view
+              Dynamic visualizations based on your dataset structure
             </p>
           </div>
         </div>

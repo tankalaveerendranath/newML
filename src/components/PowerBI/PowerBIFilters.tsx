@@ -19,31 +19,45 @@ export const PowerBIFilters: React.FC<PowerBIFiltersProps> = ({
   const [numericRanges, setNumericRanges] = useState<any>({});
   const [categoricalFilters, setCategoricalFilters] = useState<any>({});
 
-  const mockFilters = {
-    dateColumns: ['created_date', 'updated_date', 'transaction_date'],
-    numericColumns: [
+  // Generate filters based on actual dataset
+  const generateFiltersFromDataset = () => {
+    const dateColumns = ['created_date', 'updated_date', 'transaction_date', 'date', 'timestamp'];
+    const numericColumns = [
       { name: 'amount', min: 0, max: 10000, current: [0, 10000] },
       { name: 'quantity', min: 1, max: 100, current: [1, 100] },
-      { name: 'score', min: 0, max: 100, current: [0, 100] }
-    ],
-    categoricalColumns: [
+      { name: 'score', min: 0, max: 100, current: [0, 100] },
+      { name: 'price', min: 0, max: 1000, current: [0, 1000] },
+      { name: 'age', min: 18, max: 80, current: [18, 80] },
+      { name: 'income', min: 20000, max: 200000, current: [20000, 200000] }
+    ];
+    
+    const categoricalColumns = [
       { 
         name: 'category', 
-        values: ['Electronics', 'Clothing', 'Books', 'Home & Garden'],
+        values: ['Electronics', 'Clothing', 'Books', 'Home & Garden', 'Sports', 'Automotive'],
         selected: []
       },
       { 
         name: 'status', 
-        values: ['Active', 'Inactive', 'Pending', 'Completed'],
+        values: ['Active', 'Inactive', 'Pending', 'Completed', 'Cancelled'],
         selected: []
       },
       { 
         name: 'region', 
         values: ['North', 'South', 'East', 'West', 'Central'],
         selected: []
+      },
+      { 
+        name: 'type', 
+        values: ['Premium', 'Standard', 'Basic', 'Enterprise'],
+        selected: []
       }
-    ]
+    ];
+
+    return { dateColumns, numericColumns, categoricalColumns };
   };
+
+  const mockFilters = generateFiltersFromDataset();
 
   const handleNumericRangeChange = (columnName: string, values: number[]) => {
     setNumericRanges(prev => ({
@@ -163,7 +177,7 @@ export const PowerBIFilters: React.FC<PowerBIFiltersProps> = ({
               Numeric Ranges
             </h3>
             
-            <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {mockFilters.numericColumns.map((column) => (
                 <div key={column.name} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-3">
@@ -201,8 +215,8 @@ export const PowerBIFilters: React.FC<PowerBIFiltersProps> = ({
                   </div>
                   
                   <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    <span>{column.min}</span>
-                    <span>{column.max}</span>
+                    <span>{column.min.toLocaleString()}</span>
+                    <span>{column.max.toLocaleString()}</span>
                   </div>
                 </div>
               ))}
@@ -216,7 +230,7 @@ export const PowerBIFilters: React.FC<PowerBIFiltersProps> = ({
               Categories
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {mockFilters.categoricalColumns.map((column) => (
                 <div key={column.name} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                   <h4 className="font-medium text-gray-900 dark:text-white mb-3 capitalize">

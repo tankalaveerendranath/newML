@@ -49,7 +49,11 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({ onBack }) => {
       if (sample.length === 0) return 'text';
       
       const isNumeric = sample.every(val => !isNaN(Number(val)) && val !== '');
-      return isNumeric ? 'number' : 'text';
+      const isDate = sample.every(val => !isNaN(Date.parse(val)));
+      
+      if (isNumeric) return 'number';
+      if (isDate) return 'date';
+      return 'text';
     });
 
     // Convert data based on detected types
@@ -58,7 +62,9 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({ onBack }) => {
         if (!cell || cell === '' || cell.toLowerCase() === 'null' || cell.toLowerCase() === 'na') {
           return null;
         }
-        return dataTypes[colIndex] === 'number' ? Number(cell) : cell;
+        if (dataTypes[colIndex] === 'number') return Number(cell);
+        if (dataTypes[colIndex] === 'date') return new Date(cell);
+        return cell;
       })
     );
 
