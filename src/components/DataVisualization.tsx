@@ -20,7 +20,7 @@ import {
 } from 'recharts';
 import { Dataset, ChartConfig } from '../types';
 import { getColumnType, getUniqueValues } from '../utils/dataProcessor';
-import { BarChart3, LineChart as LineChartIcon, PieChart as PieChartIcon, TrendingUp, Scatter3D } from 'lucide-react';
+import { BarChart3, LineChart as LineChartIcon, PieChart as PieChartIcon, TrendingUp, ScatterChart as Scatter3D } from 'lucide-react';
 
 interface DataVisualizationProps {
   dataset: Dataset;
