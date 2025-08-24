@@ -32,4 +32,3 @@ export interface DashboardMetrics {
   numericColumns: number;
   categoricalColumns: number;
   missingValues: number;
-}

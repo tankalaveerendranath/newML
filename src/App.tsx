@@ -5,7 +5,7 @@ import { MetricsDashboard } from './components/MetricsDashboard';
 import { DataVisualization } from './components/DataVisualization';
 import { PowerBIEmbed } from './components/PowerBIEmbed';
 import { processCSVData } from './utils/dataProcessor';
-import { Dataset, PowerBIConfig } from './types';
+import { Dataset, PowerBIConfig } from './types/index';
 import { BarChart3, Database, Eye, Settings, Upload } from 'lucide-react';
 
 function App() {

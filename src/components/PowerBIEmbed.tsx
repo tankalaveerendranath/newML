@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { PowerBIConfig } from '../types';
+import { PowerBIConfig } from '../types/index';
 import { ExternalLink, Settings, AlertTriangle } from 'lucide-react';
 
 interface PowerBIEmbedProps {

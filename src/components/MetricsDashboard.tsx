@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dataset, DashboardMetrics } from '../types';
+import { Dataset, DashboardMetrics } from '../types/index';
 import { calculateMetrics } from '../utils/dataProcessor';
 import { BarChart3, Database, AlertTriangle, CheckCircle, TrendingUp, Users } from 'lucide-react';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dataset } from '../types';
+import { Dataset } from '../types/index';
 import { Table, BarChart3, TrendingUp } from 'lucide-react';
 
 interface DataPreviewProps {
