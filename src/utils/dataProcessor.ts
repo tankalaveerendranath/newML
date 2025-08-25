@@ -1,4 +1,4 @@
-import { DataRow, Dataset, DashboardMetrics } from '../types/index';
+import { DataRow, Dataset, DashboardMetrics } from '../types';
 
 export const processCSVData = (csvData: string, fileName: string): Dataset => {
   const lines = csvData.trim().split('\n');
@@ -25,12 +25,17 @@ export const processCSVData = (csvData: string, fileName: string): Dataset => {
     columns: headers,
     uploadedAt: new Date(),
     rowCount: data.length,
-    fileSize: csvData.length
+    fileSize: csvData.length,
+    size: Math.round(csvData.length / 1024), // KB
+    features: headers.length - 1,
+    samples: data.length,
+    type: 'mixed',
+    target: 'classification'
   };
 };
 
 export const calculateMetrics = (dataset: Dataset): DashboardMetrics => {
-  const { data, columns } = dataset;
+  const { data = [], columns = [] } = dataset;
   
   let numericColumns = 0;
   let categoricalColumns = 0;
@@ -65,6 +70,18 @@ export const calculateMetrics = (dataset: Dataset): DashboardMetrics => {
   };
 };
 
-export { calculateMetrics }
+export const getColumnType = (dataset: Dataset, columnName: string): 'numeric' | 'categorical' => {
+  const { data = [] } = dataset;
+  const sampleValues = data.slice(0, 10).map(row => row[columnName]).filter(val => val !== null && val !== '');
+  
+  if (sampleValues.length === 0) return 'categorical';
+  
+  const isNumeric = sampleValues.every(val => !isNaN(Number(val)));
+  return isNumeric ? 'numeric' : 'categorical';
+};
 
-export { processCSVData }
+export const getUniqueValues = (dataset: Dataset, columnName: string): (string | number)[] => {
+  const { data = [] } = dataset;
+  const uniqueSet = new Set(data.map(row => row[columnName]).filter(val => val !== null && val !== ''));
+  return Array.from(uniqueSet);
+};
