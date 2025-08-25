@@ -29,19 +29,6 @@ export const processCSVData = (csvData: string, fileName: string): Dataset => {
   };
 };
 
-export const getColumnType = (dataset: Dataset, columnName: string): 'numeric' | 'categorical' => {
-  const sampleValues = dataset.data.slice(0, 20).map(row => row[columnName]);
-  const numericCount = sampleValues.filter(val => 
-    val !== null && val !== '' && !isNaN(Number(val))
-  ).length;
-  
-  return numericCount > sampleValues.length * 0.7 ? 'numeric' : 'categorical';
-};
-
-export const getUniqueValues = (dataset: Dataset, columnName: string): (string | number)[] => {
-  const values = dataset.data.map(row => row[columnName]).filter(val => val !== null && val !== '');
-  return Array.from(new Set(values));
-};
 export const calculateMetrics = (dataset: Dataset): DashboardMetrics => {
   const { data, columns } = dataset;
   
