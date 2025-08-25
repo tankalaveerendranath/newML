@@ -64,3 +64,7 @@ export const calculateMetrics = (dataset: Dataset): DashboardMetrics => {
     missingValues
   };
 };
+
+export { calculateMetrics }
+
+export { processCSVData }
