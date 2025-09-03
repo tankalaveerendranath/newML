@@ -4,7 +4,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { useAuth } from './hooks/useAuth';
 import { AuthPage } from './components/Auth/AuthPage';
 import { FileUpload } from './components/FileUpload';
-import { AnalyticsDashboard } from './components/AnalyticsDashboard';
+import { UnifiedDashboard } from './components/UnifiedDashboard';
 import { Dataset } from './types';
 import { processCSVData } from './utils/dataProcessor';
 
@@ -45,7 +45,7 @@ const AppContent: React.FC = () => {
           </div>
         </div>
       ) : (
-        <AnalyticsDashboard dataset={dataset} />
+        <UnifiedDashboard dataset={dataset} />
       )}
     </div>
   );
